@@ -1,5 +1,15 @@
 # interconnected_alpha
 
+**Role in the governed action stack:** OBSERVATION — raw signals → named **Keys** for the Locks layer.
+
+```text
+α Alpha (Keys) → ζ Zeta (Locks) → β Beta (Decision) → δ Delta (custody)
+```
+
+Part of the composable decision spine. Live orchestrated path: [observe-perceive](https://github.com/wking53214/observe-perceive). Locks: [interconnected_zeta](https://github.com/wking53214/interconnected_zeta).
+
+---
+
 Detects named **Keys** in raw pediatric vitals — the first stage of the
 4-repo pipeline, feeding directly into `interconnected_zeta`'s Locks.
 
