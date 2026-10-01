@@ -111,4 +111,4 @@ Example: `examples/pediatric_discharge.py` (full α→ζ timeline).
 Source of extraction: [`OBSERVE`](https://github.com/wking53214/OBSERVE) / `observe_consolidated.py` in observe-perceive.  
 Hub: observe-perceive **does not yet substitute α for RiskAdapters**.
 
-Proprietary. Copyright (c) 2026 William King. All rights reserved. See LICENSE.
+Proprietary. Copyright (c) 2026 William N. King. All rights reserved. See LICENSE.
