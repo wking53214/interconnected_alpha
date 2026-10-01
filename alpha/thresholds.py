@@ -1,7 +1,7 @@
 """Age-adjusted pediatric vital-sign thresholds.
 
-Extracted verbatim from observe_consolidated.py:113-119 (PEDIATRIC_NORMS)
-and observe_consolidated.py:247-257 (get_age_group). These are the exact
+PEDIATRIC_NORMS and get_age_group are extracted verbatim from the original
+private implementation. These are the exact
 source values, not re-derived or approximated.
 """
 

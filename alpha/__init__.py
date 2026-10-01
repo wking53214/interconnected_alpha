@@ -1,7 +1,7 @@
 """alpha: detects named Keys in raw pediatric vitals.
 
-Extracted from two scoring methods in OBSERVE's RiskAdapters
-(observe_consolidated.py) that computed named clinical signals inline as
+Extracted from two scoring methods in the original private implementation
+that computed named clinical signals inline as
 part of a single accumulated risk score. This module pulls those named
 checks out as standalone, independently testable detectors that each
 produce a `zeta.Key` -- the first-class unit `zeta`'s Locks combine.

@@ -1,6 +1,7 @@
 """VitalsObservation: the minimal raw-input shape alpha's detectors consume.
 
-Not a copy of OBSERVE's full VitalsSnapshot (which also carries patient_id,
+Not a copy of the original private implementation's full vitals snapshot
+(which also carries patient_id,
 timestamp, and an open-ended context dict serving many purposes unrelated
 to detection) -- just the four raw vital signs plus age_months, the only
 context field the extracted detectors actually read.

@@ -1,9 +1,10 @@
 """Key detectors: named, single-purpose pattern checks against a VitalsObservation.
 
 Each function here is extracted from a scoring branch that, in the
-source, existed only as one `if`/`elif` clause inline in a larger score
-accumulator (RiskAdapters.heuristic and RiskAdapters.behavioral_vaccine,
-observe_consolidated.py) -- never as a standalone, independently testable,
+original private implementation (referred to below as the source),
+existed only as one `if`/`elif` clause inline in a larger score
+accumulator (two separate scoring methods there) -- never as a standalone,
+independently testable,
 reusable unit. Extracting them is what makes them usable as named
 `zeta.Key` inputs to a Lock, which needs named Keys to combine under
 AND/OR/N-of-M, not one opaque accumulated score.
@@ -11,20 +12,20 @@ AND/OR/N-of-M, not one opaque accumulated score.
 Two groups, extracted from two different source methods with two
 different threshold styles -- preserved faithfully, not harmonized:
 
-  - Single-vital, AGE-ADJUSTED detectors, from RiskAdapters.heuristic
-    (observe_consolidated.py:292-340): critical_o2, warning_o2,
+  - Single-vital, AGE-ADJUSTED detectors, from the first of the two
+    source methods: critical_o2, warning_o2,
     tachycardia, bradycardia, tachypnea, fever, hypothermia.
 
   - Multi-vital, named-syndrome detectors using FIXED absolute
-    thresholds (NOT age-adjusted), from RiskAdapters.behavioral_vaccine
-    (observe_consolidated.py:517-534): septic_shock,
+    thresholds (NOT age-adjusted), from the second of the two source
+    methods: septic_shock,
     respiratory_distress, hypovolemic_shock. The source does not
     age-adjust these three checks; that asymmetry is reproduced here
     exactly, not smoothed over.
 
 Explicitly OUT OF SCOPE (not extracted, and not silently approximated):
-  - The BASE_RISK score and BENIGN_PATTERN suppressions in
-    behavioral_vaccine (observe_consolidated.py:506-515, 540-549) are
+  - The base risk score and benign-pattern suppressions in the second
+    source method are
     score-accumulation and score-modulation logic ("reduce the score by
     N because of context Y"), not "is this named condition present"
     checks. They don't fit the Key model and are left to whatever
@@ -32,10 +33,10 @@ Explicitly OUT OF SCOPE (not extracted, and not silently approximated):
   - The per-syndrome SEVERITY WEIGHTS the source adds on top of each
     boolean match -- score += 0.40 for septic_shock, += 0.35 for
     respiratory_distress, += 0.35 for hypovolemic_shock
-    (observe_consolidated.py:524, 529, 534) -- are also dropped. An
+    -- are also dropped. An
     earlier version of this docstring didn't mention this; adversarial
-    review caught the omission. These weights live INSIDE the line
-    range claimed as faithfully extracted, so leaving them out silently
+    review caught the omission. These weights live INSIDE the part of
+    the source claimed as faithfully extracted, so leaving them out silently
     would have been a real misrepresentation, not a minor gap.
 
 On Key.confidence: every detector here always produces confidence=1.0
@@ -47,8 +48,8 @@ itself. The source's severity weights above are a different concept
 governance/prioritization question) than detection confidence (how sure
 are we this pattern is present, an observation question), and conflating
 the two by stuffing severity into `confidence=` would misuse the field.
-Neither heuristic's data-completeness confidence (observe_consolidated.py:
-333-338) nor behavioral_vaccine's alert-context confidence (:553-554) is
+Neither the first source method's data-completeness confidence nor the
+second source method's alert-context confidence is
 reproduced here either -- both are properties of the SOURCE's overall
 risk-fusion output, not of any single named condition, and have no home
 in a per-Key model. A caller that needs severity weighting or
@@ -63,7 +64,7 @@ from .vitals import VitalsObservation
 
 
 # --- Single-vital, age-adjusted detectors ---
-# (RiskAdapters.heuristic, observe_consolidated.py:292-340)
+# (extracted from the first of the two source methods)
 
 def critical_o2(v: VitalsObservation) -> Key:
     present = v.oxygen_saturation < 88.0
@@ -75,8 +76,8 @@ def critical_o2(v: VitalsObservation) -> Key:
 
 
 def warning_o2(v: VitalsObservation) -> Key:
-    # Source note (observe_consolidated.py:306-311): WARNING_O2 is an
-    # `elif` under CRITICAL_O2. This is NOT a vacuous ordering: every
+    # Source note: the warning_o2 check is an
+    # `elif` under the critical_o2 check. This is NOT a vacuous ordering: every
     # age-adjusted o2_low threshold (90/90/91/92/91) is above 88, so
     # "O2 < 88" always also satisfies "O2 < o2_low". Without excluding
     # the critical case explicitly, warning_o2 would also fire whenever
@@ -121,7 +122,7 @@ def hypothermia(v: VitalsObservation) -> Key:
 
 
 # --- Multi-vital named-syndrome detectors, FIXED absolute thresholds ---
-# (RiskAdapters.behavioral_vaccine, observe_consolidated.py:517-534)
+# (extracted from the second of the two source methods)
 
 def septic_shock(v: VitalsObservation) -> Key:
     present = (
