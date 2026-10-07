@@ -3,6 +3,7 @@ name = "alpha"
 version = "0.1.0"
 description = "Detects named Keys in raw pediatric vitals, ready to feed into interconnected_zeta Locks."
 requires-python = ">=3.9"
+license = { text = "Apache-2.0" }
 dependencies = [
     "zeta @ git+https://github.com/wking53214/interconnected_zeta",
 ]
