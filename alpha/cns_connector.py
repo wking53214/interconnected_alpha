@@ -103,8 +103,7 @@ def keyset_content(keyset: KeySet) -> Dict[str, Any]:
     """The deterministic content a verdict on ``keyset`` is bound to."""
     if not isinstance(keyset, KeySet):
         raise TypeError(f"expected a zeta KeySet; got {type(keyset).__name__}")
-    # zeta.KeySet has no public way to list its keys, so read its name index.
-    keys = sorted((_key_content(k) for k in keyset._by_name.values()), key=lambda c: c["name"])
+    keys = sorted((_key_content(k) for k in keyset.all_keys()), key=lambda c: c["name"])
     return {"min_confidence": float(keyset.min_confidence), "keys": keys}
 
 
