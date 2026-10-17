@@ -111,4 +111,18 @@ Example: `examples/pediatric_discharge.py` (full α→ζ timeline).
 Source of extraction: [`OBSERVE`](https://github.com/wking53214/OBSERVE) / `observe_consolidated.py` in observe-perceive.  
 Hub: observe-perceive **does not yet substitute α for RiskAdapters**.
 
+## Optional CNS connection
+
+alpha does not need CNS. It has no runtime dependency on it (its only dependency is still zeta), nothing in the package imports CNS when it loads, and `observe` never imports it (`tests/test_cns_independence.py` checks this with CNS blocked). `alpha/cns_connector.py` is the one place that knows CNS exists. Install it with `pip install 'alpha[cns] @ git+https://github.com/wking53214/interconnected_alpha'` (CNS needs Python 3.10+); without CNS, computing a digest raises `CnsNotInstalled` and nothing else changes.
+
+It makes the `zeta.KeySet` that `observe` returns **bindable** to a verdict in CNS's shared gate contract (`cns.gate`), so a verdict about detected keys can be checked against those keys:
+
+| Output | Bound content | Subject |
+|---|---|---|
+| `observe(...)` -> `KeySet` | `min_confidence`, and for every key (listed by name, so insertion order cannot matter): `name`, `present`, `confidence`, `reason` | `alpha.keyset` |
+
+`keyset_digest(keys)` and `binds(verdict, keys)` are the whole surface; `keyset_content(keys)` returns the plain content (no CNS needed). `binds` is true only for a verdict issued against exactly those keys, and false for an unbound or hand-built one. The `reason` text is bound because it carries the readings and thresholds each detector compared, so the same keys firing on a different reading is a different record. alpha identifies no patient (see non-goals), so identical keys for two patients bind alike.
+
+This is **binding only**, on purpose. alpha detects named keys; it does not evaluate locks, policy or authorization, so it offers no gate, no PASS / RETRY / BREACH mapping and no chain. Whoever judges the keys owns the verdict; alpha only lets that verdict be tied to the keys it was about.
+
 Apache-2.0.
