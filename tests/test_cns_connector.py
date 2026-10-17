@@ -219,3 +219,12 @@ def test_every_detector_key_is_in_the_bound_content():
 def test_real_detection_is_bindable_at_every_age_group(age):
     ks = observe(vitals(age_months=age))
     assert binds(issued(KEYSET_SUBJECT, keyset_digest(ks)), ks)
+
+
+def test_the_keys_come_from_the_public_listing_not_the_private_index():
+    class Listed(KeySet):
+        def all_keys(self):
+            return (Key("listed", True, 0.5, "from all_keys"),)
+
+    content = keyset_content(Listed([Key("indexed", True)]))
+    assert [k["name"] for k in content["keys"]] == ["listed"]
