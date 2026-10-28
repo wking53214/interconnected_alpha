@@ -2,7 +2,9 @@
 
 Extracted verbatim from observe_consolidated.py:113-119 (PEDIATRIC_NORMS)
 and observe_consolidated.py:247-257 (get_age_group). These are the exact
-source values, not re-derived or approximated.
+source values, not re-derived or approximated. These values are copied from
+the source and are not independently clinically validated; see README
+section 4 before relying on them.
 """
 
 from typing import Dict, Optional
