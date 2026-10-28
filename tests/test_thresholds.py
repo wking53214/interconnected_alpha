@@ -42,3 +42,9 @@ def test_get_age_group_never_returns_a_key_missing_from_pediatric_norms():
     representative_ages = [0, 2, 3, 11, 12, 35, 36, 200, None]
     produced_groups = {get_age_group(a) for a in representative_ages}
     assert produced_groups <= set(PEDIATRIC_NORMS.keys())
+
+
+def test_thresholds_module_states_it_is_not_clinically_validated():
+    import alpha.thresholds
+
+    assert "not independently clinically validated" in alpha.thresholds.__doc__.lower()
