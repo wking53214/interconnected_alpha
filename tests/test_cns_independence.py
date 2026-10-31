@@ -107,5 +107,5 @@ def test_cns_is_not_a_runtime_dependency_and_the_cns_extra_is_pinned():
     runtime = _toml_list("project", "dependencies")
     assert any(re.match(r"\s*zeta\b", d) for d in runtime), runtime       # the existing dependency is kept
     assert not [d for d in runtime if re.match(r"\s*cns\b", d, re.I)], runtime
-    assert _toml_list("project.optional-dependencies", "cns") == ["cns @ git+https://github.com/wking53214/CNS.git@v1.9.0"]
+    assert _toml_list("project.optional-dependencies", "cns") == ["cns @ git+https://github.com/wking53214/CNS.git@v2.3.0"]
     assert not [d for d in _toml_list("project.optional-dependencies", "dev") if re.match(r"\s*cns\b", d, re.I)]
