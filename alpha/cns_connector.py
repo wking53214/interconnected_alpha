@@ -63,7 +63,8 @@ INSTALL_HINT = "pip install 'alpha[cns] @ git+https://github.com/wking53214/inte
 KEYSET_SUBJECT = "alpha.keyset"
 
 # One pipeline run, named the same way by every stage's connector (CNS publishes the contract in
-# cns_composition.pipeline_context and holds the four copies to it). A plain mapping, so alpha imports nothing.
+# cns_composition.spine_trace.context_problems, which the integration runner holds the four copies to). A plain
+# mapping, so alpha imports nothing.
 CONTEXT_SCHEMA = "spine-context/1"
 _CONTEXT_FIELDS = ("schema", "entity_id", "event_id", "run_id")
 
@@ -126,8 +127,9 @@ def keyset_content(keyset: KeySet, *, context: Optional[Mapping] = None) -> Dict
     """The deterministic content a verdict on ``keyset`` is bound to.
 
     ``context`` (schema, entity_id, event_id, run_id) binds the keys to the observation they came from. With it the
-    content gains ``context`` and ``present_names``, the sorted names zeta's KeySet rule treats as present (present
-    and at or above ``min_confidence``), so a reader never has to re-derive that rule. Without it the content is
+    content gains ``context``, ``present_names``, the sorted names zeta's KeySet rule treats as present (present
+    and at or above ``min_confidence``), so a reader never has to re-derive that rule, and ``keyset_fingerprint``,
+    zeta's own fingerprint of this KeySet, which a LockResult records for the KeySet it was evaluated from. Without it the content is
     exactly what it always was.
     """
     if not isinstance(keyset, KeySet):
@@ -135,8 +137,14 @@ def keyset_content(keyset: KeySet, *, context: Optional[Mapping] = None) -> Dict
     keys = sorted((_key_content(k) for k in keyset.all_keys()), key=lambda c: c["name"])
     content: Dict[str, Any] = {"min_confidence": float(keyset.min_confidence), "keys": keys}
     if context is not None:
+        fingerprint = getattr(keyset, "fingerprint", None)
+        if not callable(fingerprint):
+            raise ValueError(
+                "this zeta's KeySet has no fingerprint(); binding keys to a run needs the zeta that records it"
+            )
         content["context"] = _context(context)
         content["present_names"] = sorted(keyset.names_present())
+        content["keyset_fingerprint"] = fingerprint()
     return content
 
 

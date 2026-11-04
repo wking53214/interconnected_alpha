@@ -89,3 +89,32 @@ def test_binds_checks_a_verdict_issued_against_the_run_bound_keyset():
     assert binds(verdict, keys, context=dict(CTX))
     assert not binds(verdict, keys)
     assert not binds(verdict, keys, context={**CTX, "entity_id": "p2"})
+
+
+# --- the content carries zeta's own fingerprint of the KeySet, so a result can be matched to it -----------------
+
+def test_with_a_context_the_content_carries_the_keysets_own_fingerprint():
+    keys = observe(SICK)
+    content = keyset_content(keys, context=dict(CTX))
+    assert content["keyset_fingerprint"] == keys.fingerprint() and len(content["keyset_fingerprint"]) == 64
+
+
+def test_without_a_context_the_content_does_not_carry_it_so_existing_digests_are_unchanged():
+    assert "keyset_fingerprint" not in keyset_content(observe(SICK))
+
+
+def test_two_sets_of_readings_listing_the_same_present_keys_carry_different_fingerprints():
+    other = VitalsObservation(heart_rate=149, oxygen_saturation=90.0, respiratory_rate=36, temperature=39.6, age_months=14)
+    a, b = observe(SICK), observe(other)
+    assert a.names_present() == b.names_present()
+    assert keyset_content(a, context=dict(CTX))["keyset_fingerprint"] != keyset_content(b, context=dict(CTX))["keyset_fingerprint"]
+
+
+def test_a_keyset_from_a_zeta_that_cannot_fingerprint_is_refused_under_a_context_not_silently_bound_without_one():
+    class OldKeySet(KeySet):
+        fingerprint = None  # an older zeta has no such method
+
+    old = OldKeySet(observe(SICK).all_keys())
+    with pytest.raises(ValueError, match="no fingerprint"):
+        keyset_content(old, context=dict(CTX))
+    assert "keyset_fingerprint" not in keyset_content(old)  # lenient content is untouched
