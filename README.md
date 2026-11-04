@@ -65,7 +65,7 @@ examples/pediatric_discharge.py
 | Confidence | Always `1.0`. Callers who need probabilistic detection must do it elsewhere. |
 | Age-group holes | `get_age_group(None)` and ages outside the table follow source behavior; do not assume clinical completeness. |
 | Uncalibrated norms | `PEDIATRIC_NORMS` copied from OBSERVE. Not independently clinically validated. Commercial red team: OBSERVE pediatric path is **not commercially relevant as-is** (missed detections filed as test skips). |
-| Dependency | Git URL `zeta @ git+https://github.com/wking53214/interconnected_zeta` — **unpinned**. Default-branch drift can break α. |
+| Dependency | `zeta` is pinned by commit in `pyproject.toml` (`tests/test_zeta_pin.py` holds the pin), so moving it is a reviewed change. It is a git dependency, not on a package index. |
 | Live-path wiring | observe-perceive still runs `observe_consolidated.py` RiskAdapters inline. α is **not imported** by the orchestrator. Dual implementation: extract vs source of extraction. |
 | Threading / IO | Pure functions. No store. |
 
@@ -121,7 +121,9 @@ It makes the `zeta.KeySet` that `observe` returns **bindable** to a verdict in C
 |---|---|---|
 | `observe(...)` -> `KeySet` | `min_confidence`, and for every key (listed by name, so insertion order cannot matter): `name`, `present`, `confidence`, `reason` | `alpha.keyset` |
 
-`keyset_digest(keys)` and `binds(verdict, keys)` are the whole surface; `keyset_content(keys)` returns the plain content (no CNS needed). `binds` is true only for a verdict issued against exactly those keys, and false for an unbound or hand-built one. The `reason` text is bound because it carries the readings and thresholds each detector compared, so the same keys firing on a different reading is a different record. alpha identifies no patient (see non-goals), so identical keys for two patients bind alike.
+`keyset_digest(keys)` and `binds(verdict, keys)` are the whole surface; `keyset_content(keys)` returns the plain content (no CNS needed). `binds` is true only for a verdict issued against exactly those keys, and false for an unbound or hand-built one. The `reason` text is bound because it carries the readings and thresholds each detector compared, so the same keys firing on a different reading is a different record. alpha identifies no patient (see non-goals), so by default identical keys for two patients bind alike.
+
+**Binding keys to a run.** Pass `context=` to `keyset_content`, `keyset_digest` or `binds`: a mapping with exactly `schema` (`"spine-context/1"`), `entity_id`, `event_id` and `run_id`, all non-empty strings. The content then gains `context` and `present_names`, the sorted names zeta's own `KeySet` rule treats as present (present, and at or above `min_confidence`), so a reader does not re-derive that rule. A malformed context or unknown schema raises. Without a context the content, and every existing digest, is unchanged. alpha still identifies nobody on its own: the caller supplies the context, and CNS's strict trace is what refuses a run whose stages disagree.
 
 This is **binding only**, on purpose. alpha detects named keys; it does not evaluate locks, policy or authorization, so it offers no gate, no PASS / RETRY / BREACH mapping and no chain. Whoever judges the keys owns the verdict; alpha only lets that verdict be tied to the keys it was about.
 
