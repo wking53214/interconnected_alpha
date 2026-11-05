@@ -156,3 +156,12 @@ def test_a_verdict_binds_to_the_origin_it_was_issued_against_and_to_no_other():
     assert not binds(result, keys, context=dict(CTX))
     assert not binds(result, keys, context=dict(CTX), origin={**ORIGIN, "producer": "someone else"})
     assert not binds(_verdict(keys, context=dict(CTX)), keys, context=dict(CTX), origin=ORIGIN)
+
+
+def test_origin_does_not_change_the_keyset_fingerprint_or_present_names():
+    keys = observe(SICK)
+    plain = keyset_content(keys, context=dict(CTX))
+    with_origin = keyset_content(keys, context=dict(CTX), origin=ORIGIN)
+    assert with_origin["keyset_fingerprint"] == plain["keyset_fingerprint"] == keys.fingerprint()
+    assert with_origin["present_names"] == plain["present_names"]
+    assert with_origin["keys"] == plain["keys"]
