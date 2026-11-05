@@ -43,6 +43,7 @@ from __future__ import annotations
 
 import importlib
 from collections.abc import Mapping
+from datetime import datetime
 from types import ModuleType
 from typing import Any, Dict, Optional
 
@@ -67,6 +68,7 @@ KEYSET_SUBJECT = "alpha.keyset"
 # mapping, so alpha imports nothing.
 CONTEXT_SCHEMA = "spine-context/1"
 _CONTEXT_FIELDS = ("schema", "entity_id", "event_id", "run_id")
+_ORIGIN_FIELDS = ("source", "producer", "observed_at", "collection_context", "transformation")
 
 
 class CnsNotInstalled(ImportError):
@@ -108,22 +110,46 @@ def _key_content(key: Key) -> Dict[str, Any]:
 
 
 def _context(context: Any) -> Dict[str, str]:
-    """A validated copy of a pipeline context: exactly the four fields, all non-empty strings, a known schema."""
+    """A validated snapshot of a pipeline context: exactly the four fields, all non-empty exact str, a known schema."""
     if not isinstance(context, Mapping):
         raise TypeError(f"a pipeline context must be a mapping; got {type(context).__name__}")
-    if set(context) != set(_CONTEXT_FIELDS):
-        raise ValueError(f"a pipeline context has exactly the fields {list(_CONTEXT_FIELDS)}; got {sorted(map(str, context))}")
+    snapshot = dict(context)  # read once; everything below validates and returns this copy, never the live mapping
+    if set(snapshot) != set(_CONTEXT_FIELDS):
+        raise ValueError(f"a pipeline context has exactly the fields {list(_CONTEXT_FIELDS)}; got {sorted(map(str, snapshot))}")
     for name in _CONTEXT_FIELDS:
-        if not isinstance(context[name], str):
-            raise TypeError(f"context field {name} must be a str; got {type(context[name]).__name__}")
-        if not context[name]:
+        if type(snapshot[name]) is not str:
+            raise TypeError(f"context field {name} must be a str (exact type, not a subclass); got {type(snapshot[name]).__name__}")
+        if not snapshot[name]:
             raise ValueError(f"context field {name} must be non-empty")
-    if context["schema"] != CONTEXT_SCHEMA:
-        raise ValueError(f"unsupported context schema {context['schema']!r}; this connector speaks {CONTEXT_SCHEMA!r}")
-    return {name: context[name] for name in _CONTEXT_FIELDS}
+    if snapshot["schema"] != CONTEXT_SCHEMA:
+        raise ValueError(f"unsupported context schema {snapshot['schema']!r}; this connector speaks {CONTEXT_SCHEMA!r}")
+    return snapshot
 
 
-def keyset_content(keyset: KeySet, *, context: Optional[Mapping] = None) -> Dict[str, Any]:
+def _origin(origin: Any) -> Dict[str, str]:
+    """A validated snapshot of an origin record: exactly the five fields, each a non-empty exact str.
+
+    These are the producer's own assertions. Nothing here authenticates them or checks that they are true;
+    ``observed_at`` is only required to parse as ISO 8601 (``datetime.fromisoformat``).
+    """
+    if not isinstance(origin, Mapping):
+        raise TypeError(f"an origin must be a mapping; got {type(origin).__name__}")
+    snapshot = dict(origin)  # read once; validate and return this copy
+    if set(snapshot) != set(_ORIGIN_FIELDS):
+        raise ValueError(f"an origin has exactly the fields {list(_ORIGIN_FIELDS)}; got {sorted(map(str, snapshot))}")
+    for name in _ORIGIN_FIELDS:
+        if type(snapshot[name]) is not str:
+            raise TypeError(f"origin field {name} must be a str (exact type, not a subclass); got {type(snapshot[name]).__name__}")
+        if not snapshot[name]:
+            raise ValueError(f"origin field {name} must be non-empty")
+    try:
+        datetime.fromisoformat(snapshot["observed_at"])
+    except ValueError:
+        raise ValueError(f"origin field observed_at must be ISO 8601 text; got {snapshot['observed_at']!r}") from None
+    return {name: snapshot[name] for name in _ORIGIN_FIELDS}
+
+
+def keyset_content(keyset: KeySet, *, context: Optional[Mapping] = None, origin: Optional[Mapping] = None) -> Dict[str, Any]:
     """The deterministic content a verdict on ``keyset`` is bound to.
 
     ``context`` (schema, entity_id, event_id, run_id) binds the keys to the observation they came from. With it the
@@ -131,9 +157,16 @@ def keyset_content(keyset: KeySet, *, context: Optional[Mapping] = None) -> Dict
     and at or above ``min_confidence``), so a reader never has to re-derive that rule, and ``keyset_fingerprint``,
     zeta's own fingerprint of this KeySet, which a LockResult records for the KeySet it was evaluated from. Without it the content is
     exactly what it always was.
+
+    ``origin`` (source, producer, observed_at, collection_context, transformation) records, when supplied, who
+    claims to have produced the readings, from what source, when observed, in what collection context and by what
+    transformation. It is added as ``origin`` only when supplied, so content without it is unchanged. These are
+    the producer's own assertions bound into the digest: alpha does not authenticate them and makes no claim
+    about authorization or truthfulness.
     """
     if not isinstance(keyset, KeySet):
         raise TypeError(f"expected a zeta KeySet; got {type(keyset).__name__}")
+    origin_copy = None if origin is None else _origin(origin)  # validated before anything else is built
     keys = sorted((_key_content(k) for k in keyset.all_keys()), key=lambda c: c["name"])
     content: Dict[str, Any] = {"min_confidence": float(keyset.min_confidence), "keys": keys}
     if context is not None:
@@ -145,19 +178,28 @@ def keyset_content(keyset: KeySet, *, context: Optional[Mapping] = None) -> Dict
         content["context"] = _context(context)
         content["present_names"] = sorted(keyset.names_present())
         content["keyset_fingerprint"] = fingerprint()
+    if origin_copy is not None:
+        content["origin"] = origin_copy
     return content
 
 
-def keyset_digest(keyset: KeySet, *, context: Optional[Mapping] = None) -> str:
+def keyset_digest(keyset: KeySet, *, context: Optional[Mapping] = None, origin: Optional[Mapping] = None) -> str:
     """The digest a verdict bound to ``keyset`` carries."""
-    return _cns_gate().subject_digest(keyset_content(keyset, context=context))
+    return _cns_gate().subject_digest(keyset_content(keyset, context=context, origin=origin))
 
 
-def binds(result: Any, keyset: KeySet, *, subject: str = KEYSET_SUBJECT, context: Optional[Mapping] = None) -> bool:
+def binds(
+    result: Any,
+    keyset: KeySet,
+    *,
+    subject: str = KEYSET_SUBJECT,
+    context: Optional[Mapping] = None,
+    origin: Optional[Mapping] = None,
+) -> bool:
     """Whether the ``cns.gate.GateResult`` ``result`` was issued against exactly ``keyset``.
 
     An unbound or hand-built result is ``False``. This checks what a verdict
     was about; it says nothing about what the verdict was.
     """
-    digest = keyset_digest(keyset, context=context)
+    digest = keyset_digest(keyset, context=context, origin=origin)
     return bool(result.binds(subject, digest))
