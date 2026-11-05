@@ -108,19 +108,20 @@ def _key_content(key: Key) -> Dict[str, Any]:
 
 
 def _context(context: Any) -> Dict[str, str]:
-    """A validated copy of a pipeline context: exactly the four fields, all non-empty strings, a known schema."""
+    """A validated snapshot of a pipeline context: exactly the four fields, all non-empty exact str, a known schema."""
     if not isinstance(context, Mapping):
         raise TypeError(f"a pipeline context must be a mapping; got {type(context).__name__}")
-    if set(context) != set(_CONTEXT_FIELDS):
-        raise ValueError(f"a pipeline context has exactly the fields {list(_CONTEXT_FIELDS)}; got {sorted(map(str, context))}")
+    snapshot = dict(context)  # read once; everything below validates and returns this copy, never the live mapping
+    if set(snapshot) != set(_CONTEXT_FIELDS):
+        raise ValueError(f"a pipeline context has exactly the fields {list(_CONTEXT_FIELDS)}; got {sorted(map(str, snapshot))}")
     for name in _CONTEXT_FIELDS:
-        if not isinstance(context[name], str):
-            raise TypeError(f"context field {name} must be a str; got {type(context[name]).__name__}")
-        if not context[name]:
+        if type(snapshot[name]) is not str:
+            raise TypeError(f"context field {name} must be a str (exact type, not a subclass); got {type(snapshot[name]).__name__}")
+        if not snapshot[name]:
             raise ValueError(f"context field {name} must be non-empty")
-    if context["schema"] != CONTEXT_SCHEMA:
-        raise ValueError(f"unsupported context schema {context['schema']!r}; this connector speaks {CONTEXT_SCHEMA!r}")
-    return {name: context[name] for name in _CONTEXT_FIELDS}
+    if snapshot["schema"] != CONTEXT_SCHEMA:
+        raise ValueError(f"unsupported context schema {snapshot['schema']!r}; this connector speaks {CONTEXT_SCHEMA!r}")
+    return snapshot
 
 
 def keyset_content(keyset: KeySet, *, context: Optional[Mapping] = None) -> Dict[str, Any]:

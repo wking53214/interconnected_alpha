@@ -118,3 +118,35 @@ def test_a_keyset_from_a_zeta_that_cannot_fingerprint_is_refused_under_a_context
     with pytest.raises(ValueError, match="no fingerprint"):
         keyset_content(old, context=dict(CTX))
     assert "keyset_fingerprint" not in keyset_content(old)  # lenient content is untouched
+
+
+def test_a_mapping_whose_values_change_between_reads_never_yields_a_copy_with_later_values():
+    from collections.abc import Mapping
+
+    class Shifting(Mapping):
+        def __init__(self):
+            self.reads = 0
+
+        def __iter__(self):
+            return iter(CTX)
+
+        def __len__(self):
+            return len(CTX)
+
+        def __getitem__(self, key):
+            self.reads += 1
+            return CTX[key] if self.reads <= len(CTX) else ""  # later reads would be empty
+
+    content = keyset_content(observe(SICK), context=Shifting())
+    assert content["context"] == CTX
+
+
+def test_a_str_subclass_in_the_context_is_refused_naming_the_field():
+    class Id(str):
+        pass
+
+    for field in CTX:
+        ctx = dict(CTX)
+        ctx[field] = Id(ctx[field])
+        with pytest.raises(TypeError, match=field):
+            keyset_content(observe(SICK), context=ctx)
