@@ -88,8 +88,14 @@ def test_a_confidence_given_as_an_int_is_the_same_record_as_the_float():
 
 
 def test_a_key_added_twice_is_one_key_as_the_keyset_defines_it():
-    twice = KeySet([Key("a", False, reason="old"), Key("a", True, reason="new")])
+    twice = KeySet([Key("a", True, reason="old"), Key("a", True, reason="new")])
     assert keyset_digest(twice) == keyset_digest(KeySet([Key("a", True, reason="new")]))
+
+
+def test_a_key_added_twice_with_conflicting_presence_is_refused_by_the_keyset():
+    """Zeta main refuses it (F13): the old test above asserted the dropped reading was silent."""
+    with pytest.raises(ValueError, match="appears more than once with conflicting present values"):
+        KeySet([Key("a", False, reason="old"), Key("a", True, reason="new")])
 
 
 # ------------------------------------------------------------ every bound field matters
