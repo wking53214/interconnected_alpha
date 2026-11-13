@@ -1,6 +1,6 @@
 # interconnected_alpha (α)
 
-Extracted **observation → named Keys** layer. Version `0.1.0`. Pediatric vitals only. Depends on [`interconnected_zeta`](https://github.com/wking53214/interconnected_zeta) (`zeta.Key` / `zeta.KeySet`).
+Extracted **observation → named Keys** layer. Version `0.1.0`. Pediatric vitals only today; a domain-pack contract (`alpha.core`) is the first step toward other domains. Depends on [`interconnected_zeta`](https://github.com/wking53214/interconnected_zeta) (`zeta.Key` / `zeta.KeySet`).
 
 ## 1. Pipeline Position & Role
 
@@ -46,6 +46,24 @@ alpha/detectors.py     ten named detectors
 alpha/registry.py      observe()
 examples/pediatric_discharge.py
 ```
+
+## Domain packs (`alpha.core`)
+
+The first step of making alpha industry-agnostic. `alpha.core` holds a domain-blind contract and a registry; it names no domain. Today's
+pediatric-vitals detectors still live at the top level of `alpha` and are unchanged. A later step moves them into a pack of their own.
+
+A pack (`alpha.core.DomainPack`) declares its `NAME`, `VERSION` (MAJOR.MINOR.PATCH), `DOMAIN` and the Key names it can emit (`KEYS`),
+and its `parameters()` as data: each `Parameter` is named, typed (an exact `int` or `float`, finite, never a `bool`), bounded
+(`minimum <= value <= maximum`), described, and carries who approved it, the approval date and the justification. There are no defaults.
+`PackRegistry.register` validates totally, listing every violation in one `PackValidationError`, and refuses an invalid pack, a pack whose
+name is already registered, and anything that is not a `DomainPack`. `PackRegistry.observe` holds a pack to what it declared: the result
+must be exactly a `zeta.KeySet` (a subclass is refused) and every Key must be one the pack declared. The parameters are read once, at
+registration, and that snapshot is what the registry keeps. `pack_identity(pack)` is `pack:<name>/<version>`, for a producer to record with
+what it observed (for example in the origin's `transformation` field).
+
+Limits, stated plainly: a pack's identity is a producer's claim and nothing here authenticates it; "approved by" is recorded and not
+checked; the contract validates the shape of a declaration, not whether a threshold is right for its domain. Modelled on the cassette
+contract in sentinel_os (kernel contract, declared bounded parameters, fail-loud load); no sentinel_os code is used.
 
 ## 3. What It Does NOT Do / Non-Goals
 
