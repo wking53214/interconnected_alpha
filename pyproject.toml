@@ -21,4 +21,4 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["alpha", "alpha.core", "alpha.packs", "alpha.packs.pediatric_vitals"]
+packages = ["alpha", "alpha.core", "alpha.packs", "alpha.packs.pediatric_vitals", "alpha.packs.service_health"]

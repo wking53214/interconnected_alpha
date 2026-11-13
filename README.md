@@ -1,6 +1,6 @@
 # interconnected_alpha (α)
 
-Extracted **observation → named Keys** layer. Version `0.2.0`. Domain packs (`alpha.packs`) turn raw observations into named Keys; the one pack today is pediatric vitals (`alpha.packs.pediatric_vitals`), and `alpha.core` is the domain-blind contract a second domain would implement. Depends on [`interconnected_zeta`](https://github.com/wking53214/interconnected_zeta) (`zeta.Key` / `zeta.KeySet`).
+Extracted **observation → named Keys** layer. Version `0.2.0`. Domain packs (`alpha.packs`) turn raw observations into named Keys; two packs ship: pediatric vitals (`alpha.packs.pediatric_vitals`) and service health (`alpha.packs.service_health`, synthetic, a proof that the contract is not tied to medicine), and `alpha.core` is the domain-blind contract both implement. Depends on [`interconnected_zeta`](https://github.com/wking53214/interconnected_zeta) (`zeta.Key` / `zeta.KeySet`).
 
 ## 1. Pipeline Position & Role
 
@@ -48,7 +48,14 @@ alpha/packs/pediatric_vitals/
     detectors.py       ten named detectors
     registry.py        observe()
     pack.py            PediatricVitalsPack (the DomainPack declaration)
+alpha/packs/service_health/
+    observation.py     ServiceObservation (p95 latency, error rate, queue depth, tier)
+    thresholds.py      the declared parameters, and SERVICE_NORMS derived from them
+    detectors.py       five named detectors
+    registry.py        observe()
+    pack.py            ServiceHealthPack
 examples/pediatric_discharge.py
+examples/service_degradation.py   the same wiring in another industry
 ```
 
 ## Domain packs (`alpha.core`)
@@ -67,6 +74,8 @@ name is already registered, and anything that is not a `DomainPack`. `PackRegist
 must be exactly a `zeta.KeySet` (a subclass is refused) and every Key must be one the pack declared. The parameters are read once, at
 registration, and that snapshot is what the registry keeps. `pack_identity(pack)` is `pack:<name>/<version>`, for a producer to record with
 what it observed (for example in the origin's `transformation` field).
+
+**The second pack.** `alpha.packs.service_health` takes a `ServiceObservation` (p95 latency in ms, error rate as a fraction, queue depth, and a tier of `interactive` or `batch`) and emits five Keys: `latency_high`, `latency_critical`, `error_burst`, `queue_backlog` and `degraded_service` (high latency together with an error burst). Its 8 thresholds are declared as bounded parameters and are the single source the detectors read. They are synthetic, tuned to no real service, and declared "unapproved" the same way. A suite (`tests/test_two_packs_one_contract.py`) holds both packs to the same contract: both register in one registry, are held to the Keys they declared, observe deterministically, record their identity in the existing `origin.transformation` field (which changes the bound content, so the identity is part of what is bound), and feed Zeta locks. `examples/service_degradation.py` runs a service timeline through a Zeta lock.
 
 The pediatric pack declares its 25 age-group thresholds (`PEDIATRIC_NORMS`) as bounded parameters. **Nobody has approved them**: `approved_by` says
 "unapproved: copied verbatim from OBSERVE ...", `approval_date` is the date of the declaration, and the justification repeats that they are not
