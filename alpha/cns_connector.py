@@ -31,8 +31,8 @@ were added in cannot change the digest. ``present`` and ``confidence`` are
 normalised to ``bool`` and ``float``, so ``confidence=1`` and ``1.0`` are the
 same record.
 
-The vitals are not bound (the keys do not record them beyond their reasons),
-and alpha identifies no patient, so identical keys for two patients bind
+The raw observations are not bound (the keys do not record them beyond their reasons),
+and alpha identifies no subject, so identical keys for two subjects bind
 alike.
 
 Install with the extra:

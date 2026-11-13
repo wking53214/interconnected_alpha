@@ -1,29 +1,30 @@
-"""alpha: detects named Keys in raw pediatric vitals.
+"""alpha: the observation layer. Domain packs turn raw observations into named Keys for interconnected_zeta's Locks.
 
-Extracted from two scoring methods in OBSERVE's RiskAdapters
-(observe_consolidated.py) that computed named clinical signals inline as
-part of a single accumulated risk score. This module pulls those named
-checks out as standalone, independently testable detectors that each
-produce a `zeta.Key` -- the first-class unit `zeta`'s Locks combine.
-
-See `alpha/detectors.py` for the full extraction provenance, including
-what is faithfully preserved (age-adjustment asymmetry, elif-exclusivity
-between critical_o2/warning_o2) and what is explicitly out of scope
-(score-modulation logic that doesn't fit the Key present/absent model).
+``alpha.core`` is the domain-blind contract and registry; ``alpha.packs`` holds the packs (one subpackage per domain);
+``alpha.cns_connector`` binds a ``KeySet`` for CNS. This package names no domain: every detector lives in a pack
+under ``alpha.packs``.
 """
 
-from .vitals import VitalsObservation
-from .thresholds import PEDIATRIC_NORMS, get_age_group
-from .detectors import ALL_DETECTORS, detect_all
-from .registry import observe
+from .core import (
+    DomainPack,
+    PackError,
+    PackRegistry,
+    PackValidationError,
+    Parameter,
+    pack_identity,
+    pack_problems,
+    validate_pack,
+)
 
 __all__ = [
-    "VitalsObservation",
-    "PEDIATRIC_NORMS",
-    "get_age_group",
-    "ALL_DETECTORS",
-    "detect_all",
-    "observe",
+    "DomainPack",
+    "PackError",
+    "PackRegistry",
+    "PackValidationError",
+    "Parameter",
+    "pack_identity",
+    "pack_problems",
+    "validate_pack",
 ]
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"

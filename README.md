@@ -1,6 +1,6 @@
 # interconnected_alpha (α)
 
-Extracted **observation → named Keys** layer. Version `0.1.0`. Pediatric vitals only today; a domain-pack contract (`alpha.core`) is the first step toward other domains. Depends on [`interconnected_zeta`](https://github.com/wking53214/interconnected_zeta) (`zeta.Key` / `zeta.KeySet`).
+Extracted **observation → named Keys** layer. Version `0.2.0`. Domain packs (`alpha.packs`) turn raw observations into named Keys; the one pack today is pediatric vitals (`alpha.packs.pediatric_vitals`), and `alpha.core` is the domain-blind contract a second domain would implement. Depends on [`interconnected_zeta`](https://github.com/wking53214/interconnected_zeta) (`zeta.Key` / `zeta.KeySet`).
 
 ## 1. Pipeline Position & Role
 
@@ -35,22 +35,29 @@ The age-adjustment asymmetry is reproduced on purpose. Harmonizing it would over
 
 Every detector returns `Key.confidence = 1.0`. Deterministic threshold matches have no detection uncertainty. Source severity weights (`score += 0.40` / `0.35`) are **not** stuffed into `confidence`.
 
-`observe(vitals) -> KeySet` is the public façade (`alpha/registry.py`). `ALL_DETECTORS` is the ordered list. Unknown future detectors are not dynamically loaded.
+`observe(vitals) -> KeySet` is the pack's public façade (`alpha/packs/pediatric_vitals/registry.py`). `ALL_DETECTORS` is the ordered list. Unknown future detectors are not dynamically loaded.
 
 ### Layout
 
 ```
-alpha/vitals.py        VitalsObservation
-alpha/thresholds.py    PEDIATRIC_NORMS, get_age_group
-alpha/detectors.py     ten named detectors
-alpha/registry.py      observe()
+alpha/core/pack.py     DomainPack, Parameter, PackRegistry (domain-blind)
+alpha/cns_connector.py binding a KeySet for CNS (domain-blind)
+alpha/packs/pediatric_vitals/
+    vitals.py          VitalsObservation
+    thresholds.py      PEDIATRIC_NORMS, get_age_group
+    detectors.py       ten named detectors
+    registry.py        observe()
+    pack.py            PediatricVitalsPack (the DomainPack declaration)
 examples/pediatric_discharge.py
 ```
 
 ## Domain packs (`alpha.core`)
 
-The first step of making alpha industry-agnostic. `alpha.core` holds a domain-blind contract and a registry; it names no domain. Today's
-pediatric-vitals detectors still live at the top level of `alpha` and are unchanged. A later step moves them into a pack of their own.
+`alpha.core` holds a domain-blind contract and a registry; it names no domain, and neither does anything else in `alpha` outside `alpha/packs/` (a test checks that).
+The pediatric-vitals detectors moved into the pack `alpha.packs.pediatric_vitals` with no change to what they say: a digest of every detector output
+(names, presence, confidence, reasons, key fingerprint) over a grid of 20,160 readings, captured from the code before the move
+(`tests/golden_pediatric_keys.json`), is reproduced exactly. The old top-level names (`alpha.VitalsObservation`, `alpha.observe`, `alpha.PEDIATRIC_NORMS`,
+`alpha.detect_all` and the rest) and module paths (`alpha.vitals`, `alpha.detectors`, ...) are gone: a deliberate clean break, since alpha has no tags.
 
 A pack (`alpha.core.DomainPack`) declares its `NAME`, `VERSION` (MAJOR.MINOR.PATCH), `DOMAIN` and the Key names it can emit (`KEYS`),
 and its `parameters()` as data: each `Parameter` is named, typed (an exact `int` or `float`, finite, never a `bool`), bounded
@@ -60,6 +67,11 @@ name is already registered, and anything that is not a `DomainPack`. `PackRegist
 must be exactly a `zeta.KeySet` (a subclass is refused) and every Key must be one the pack declared. The parameters are read once, at
 registration, and that snapshot is what the registry keeps. `pack_identity(pack)` is `pack:<name>/<version>`, for a producer to record with
 what it observed (for example in the origin's `transformation` field).
+
+The pediatric pack declares its 25 age-group thresholds (`PEDIATRIC_NORMS`) as bounded parameters. **Nobody has approved them**: `approved_by` says
+"unapproved: copied verbatim from OBSERVE ...", `approval_date` is the date of the declaration, and the justification repeats that they are not
+independently clinically validated. The fixed absolute thresholds of `critical_o2`, `hypothermia` and the three syndrome detectors are still literals in
+`detectors.py`, not yet declared parameters. Naming a real reviewer is the pack owner's decision.
 
 Limits, stated plainly: a pack's identity is a producer's claim and nothing here authenticates it; "approved by" is recorded and not
 checked; the contract validates the shape of a declaration, not whether a threshold is right for its domain. Modelled on the cassette
@@ -102,7 +114,7 @@ No guarantee of clinical correctness, calibration, or completeness of observatio
 ## 6. Inputs, Outputs & Type Contracts
 
 ```python
-from alpha import VitalsObservation, observe
+from alpha.packs.pediatric_vitals import VitalsObservation, observe
 
 vitals = VitalsObservation(
     heart_rate=145, oxygen_saturation=90.0,

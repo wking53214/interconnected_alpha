@@ -1,5 +1,5 @@
-from alpha.registry import observe
-from alpha.vitals import VitalsObservation
+from alpha.packs.pediatric_vitals.registry import observe
+from alpha.packs.pediatric_vitals.vitals import VitalsObservation
 
 
 def test_observe_returns_keyset_with_expected_present_names():

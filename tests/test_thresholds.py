@@ -1,6 +1,6 @@
 import pytest
 
-from alpha.thresholds import PEDIATRIC_NORMS, get_age_group
+from alpha.packs.pediatric_vitals.thresholds import PEDIATRIC_NORMS, get_age_group
 
 
 @pytest.mark.parametrize("age_months,expected", [
@@ -45,6 +45,6 @@ def test_get_age_group_never_returns_a_key_missing_from_pediatric_norms():
 
 
 def test_thresholds_module_states_it_is_not_clinically_validated():
-    import alpha.thresholds
+    import alpha.packs.pediatric_vitals.thresholds as thresholds
 
-    assert "not independently clinically validated" in alpha.thresholds.__doc__.lower()
+    assert "not independently clinically validated" in thresholds.__doc__.lower()

@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 
 from zeta import Combination, LockEvaluator, LockRegistry, LockSpec
 
-from alpha import VitalsObservation, observe
+from alpha.packs.pediatric_vitals import VitalsObservation, observe
 
 
 def build_registry() -> LockRegistry:

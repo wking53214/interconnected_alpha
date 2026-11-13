@@ -1,6 +1,6 @@
 import pytest
 
-from alpha.detectors import (
+from alpha.packs.pediatric_vitals.detectors import (
     ALL_DETECTORS,
     bradycardia,
     critical_o2,
@@ -14,7 +14,7 @@ from alpha.detectors import (
     tachypnea,
     warning_o2,
 )
-from alpha.vitals import VitalsObservation
+from alpha.packs.pediatric_vitals.vitals import VitalsObservation
 
 
 def normal_child(**overrides):
@@ -192,7 +192,7 @@ def test_detect_all_raises_on_duplicate_key_names():
     # zeta.KeySet (which de-dupes by name with no warning). Verify the
     # guard actually fires, using a temporarily-patched detector list
     # rather than requiring a real bug to exist in ALL_DETECTORS.
-    import alpha.detectors as detectors_module
+    import alpha.packs.pediatric_vitals.detectors as detectors_module
 
     original = detectors_module.ALL_DETECTORS
     try:

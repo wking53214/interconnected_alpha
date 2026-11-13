@@ -1,7 +1,7 @@
 [project]
 name = "alpha"
-version = "0.1.0"
-description = "Detects named Keys in raw pediatric vitals, ready to feed into interconnected_zeta Locks."
+version = "0.2.0"
+description = "Domain packs that detect named Keys in raw observations, ready to feed into interconnected_zeta Locks."
 requires-python = ">=3.10"
 license = { text = "Apache-2.0" }
 dependencies = [
@@ -21,4 +21,4 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["alpha", "alpha.core"]
+packages = ["alpha", "alpha.core", "alpha.packs", "alpha.packs.pediatric_vitals"]

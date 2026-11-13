@@ -2,7 +2,7 @@ import math
 
 import pytest
 
-from alpha.vitals import VitalsObservation
+from alpha.packs.pediatric_vitals.vitals import VitalsObservation
 
 
 def test_valid_vitals_construct_without_error():
