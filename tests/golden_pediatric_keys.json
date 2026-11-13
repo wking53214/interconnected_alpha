@@ -1,0 +1,2366 @@
+{
+ "count": 20160,
+ "sha256": "9d3e246380212ac5bd2a1b268b5ec4d3002f31f903577c53cb1b04c4e21891af",
+ "sample": [
+  [
+   null,
+   50,
+   80,
+   10,
+   34.0,
+   [
+    [
+     "bradycardia",
+     true,
+     "HR 50 vs threshold 95"
+    ],
+    [
+     "critical_o2",
+     true,
+     "O2 80% < 88% (critical)"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.0"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 50 vs threshold 140"
+    ],
+    [
+     "tachypnea",
+     false,
+     "RR 10 vs threshold 40"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 80% vs age-adjusted threshold 91%"
+    ]
+   ]
+  ],
+  [
+   null,
+   80,
+   95,
+   41,
+   34.0,
+   [
+    [
+     "bradycardia",
+     true,
+     "HR 80 vs threshold 95"
+    ],
+    [
+     "critical_o2",
+     false,
+     "O2 95% >= 88%"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.0"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 80 vs threshold 140"
+    ],
+    [
+     "tachypnea",
+     true,
+     "RR 41 vs threshold 40"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 95% vs age-adjusted threshold 91%"
+    ]
+   ]
+  ],
+  [
+   null,
+   100,
+   91,
+   60,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 100 vs threshold 95"
+    ],
+    [
+     "critical_o2",
+     false,
+     "O2 91% >= 88%"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.0"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 100 vs threshold 140"
+    ],
+    [
+     "tachypnea",
+     true,
+     "RR 60 vs threshold 40"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 91% vs age-adjusted threshold 91%"
+    ]
+   ]
+  ],
+  [
+   null,
+   141,
+   90,
+   35,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 141 vs threshold 95"
+    ],
+    [
+     "critical_o2",
+     false,
+     "O2 90% >= 88%"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.0"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     true,
+     "HR 141 vs threshold 140"
+    ],
+    [
+     "tachypnea",
+     false,
+     "RR 35 vs threshold 40"
+    ],
+    [
+     "warning_o2",
+     true,
+     "O2 90% vs age-adjusted threshold 91%"
+    ]
+   ]
+  ],
+  [
+   null,
+   200,
+   87.9,
+   46,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 200 vs threshold 95"
+    ],
+    [
+     "critical_o2",
+     true,
+     "O2 87.9% < 88% (critical)"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.0"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     true,
+     "HR>150 and O2<88"
+    ],
+    [
+     "respiratory_distress",
+     true,
+     "O2<90 and RR>45"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     true,
+     "HR 200 vs threshold 140"
+    ],
+    [
+     "tachypnea",
+     true,
+     "RR 46 vs threshold 40"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 87.9% vs age-adjusted threshold 91%"
+    ]
+   ]
+  ],
+  [
+   0,
+   80,
+   80,
+   10,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 80 vs threshold 80"
+    ],
+    [
+     "critical_o2",
+     true,
+     "O2 80% < 88% (critical)"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 38.5"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 80 vs threshold 160"
+    ],
+    [
+     "tachypnea",
+     false,
+     "RR 10 vs threshold 50"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 80% vs age-adjusted threshold 90%"
+    ]
+   ]
+  ],
+  [
+   0,
+   95,
+   95,
+   41,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 95 vs threshold 80"
+    ],
+    [
+     "critical_o2",
+     false,
+     "O2 95% >= 88%"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 38.5"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 95 vs threshold 160"
+    ],
+    [
+     "tachypnea",
+     false,
+     "RR 41 vs threshold 50"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 95% vs age-adjusted threshold 90%"
+    ]
+   ]
+  ],
+  [
+   0,
+   130,
+   91,
+   60,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 130 vs threshold 80"
+    ],
+    [
+     "critical_o2",
+     false,
+     "O2 91% >= 88%"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 38.5"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 130 vs threshold 160"
+    ],
+    [
+     "tachypnea",
+     true,
+     "RR 60 vs threshold 50"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 91% vs age-adjusted threshold 90%"
+    ]
+   ]
+  ],
+  [
+   0,
+   151,
+   90,
+   35,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 151 vs threshold 80"
+    ],
+    [
+     "critical_o2",
+     false,
+     "O2 90% >= 88%"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 38.5"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 151 vs threshold 160"
+    ],
+    [
+     "tachypnea",
+     false,
+     "RR 35 vs threshold 50"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 90% vs age-adjusted threshold 90%"
+    ]
+   ]
+  ],
+  [
+   2,
+   50,
+   87.9,
+   46,
+   34.0,
+   [
+    [
+     "bradycardia",
+     true,
+     "HR 50 vs threshold 80"
+    ],
+    [
+     "critical_o2",
+     true,
+     "O2 87.9% < 88% (critical)"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 38.5"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     true,
+     "O2<90 and RR>45"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 50 vs threshold 160"
+    ],
+    [
+     "tachypnea",
+     false,
+     "RR 46 vs threshold 50"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 87.9% vs age-adjusted threshold 90%"
+    ]
+   ]
+  ],
+  [
+   2,
+   95,
+   80,
+   10,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 95 vs threshold 80"
+    ],
+    [
+     "critical_o2",
+     true,
+     "O2 80% < 88% (critical)"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 38.5"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 95 vs threshold 160"
+    ],
+    [
+     "tachypnea",
+     false,
+     "RR 10 vs threshold 50"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 80% vs age-adjusted threshold 90%"
+    ]
+   ]
+  ],
+  [
+   2,
+   100,
+   95,
+   41,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 100 vs threshold 80"
+    ],
+    [
+     "critical_o2",
+     false,
+     "O2 95% >= 88%"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 38.5"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 100 vs threshold 160"
+    ],
+    [
+     "tachypnea",
+     false,
+     "RR 41 vs threshold 50"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 95% vs age-adjusted threshold 90%"
+    ]
+   ]
+  ],
+  [
+   2,
+   141,
+   91,
+   60,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 141 vs threshold 80"
+    ],
+    [
+     "critical_o2",
+     false,
+     "O2 91% >= 88%"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 38.5"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 141 vs threshold 160"
+    ],
+    [
+     "tachypnea",
+     true,
+     "RR 60 vs threshold 50"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 91% vs age-adjusted threshold 90%"
+    ]
+   ]
+  ],
+  [
+   2,
+   200,
+   90,
+   35,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 200 vs threshold 80"
+    ],
+    [
+     "critical_o2",
+     false,
+     "O2 90% >= 88%"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 38.5"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     true,
+     "HR 200 vs threshold 160"
+    ],
+    [
+     "tachypnea",
+     false,
+     "RR 35 vs threshold 50"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 90% vs age-adjusted threshold 90%"
+    ]
+   ]
+  ],
+  [
+   3,
+   80,
+   87.9,
+   46,
+   34.0,
+   [
+    [
+     "bradycardia",
+     true,
+     "HR 80 vs threshold 90"
+    ],
+    [
+     "critical_o2",
+     true,
+     "O2 87.9% < 88% (critical)"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.0"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     true,
+     "O2<90 and RR>45"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 80 vs threshold 150"
+    ],
+    [
+     "tachypnea",
+     true,
+     "RR 46 vs threshold 45"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 87.9% vs age-adjusted threshold 90%"
+    ]
+   ]
+  ],
+  [
+   3,
+   100,
+   80,
+   10,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 100 vs threshold 90"
+    ],
+    [
+     "critical_o2",
+     true,
+     "O2 80% < 88% (critical)"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.0"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 100 vs threshold 150"
+    ],
+    [
+     "tachypnea",
+     false,
+     "RR 10 vs threshold 45"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 80% vs age-adjusted threshold 90%"
+    ]
+   ]
+  ],
+  [
+   3,
+   130,
+   95,
+   41,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 130 vs threshold 90"
+    ],
+    [
+     "critical_o2",
+     false,
+     "O2 95% >= 88%"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.0"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 130 vs threshold 150"
+    ],
+    [
+     "tachypnea",
+     false,
+     "RR 41 vs threshold 45"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 95% vs age-adjusted threshold 90%"
+    ]
+   ]
+  ],
+  [
+   3,
+   151,
+   91,
+   60,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 151 vs threshold 90"
+    ],
+    [
+     "critical_o2",
+     false,
+     "O2 91% >= 88%"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.0"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     true,
+     "HR 151 vs threshold 150"
+    ],
+    [
+     "tachypnea",
+     true,
+     "RR 60 vs threshold 45"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 91% vs age-adjusted threshold 90%"
+    ]
+   ]
+  ],
+  [
+   11,
+   50,
+   90,
+   35,
+   34.0,
+   [
+    [
+     "bradycardia",
+     true,
+     "HR 50 vs threshold 90"
+    ],
+    [
+     "critical_o2",
+     false,
+     "O2 90% >= 88%"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.0"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 50 vs threshold 150"
+    ],
+    [
+     "tachypnea",
+     false,
+     "RR 35 vs threshold 45"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 90% vs age-adjusted threshold 90%"
+    ]
+   ]
+  ],
+  [
+   11,
+   95,
+   87.9,
+   46,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 95 vs threshold 90"
+    ],
+    [
+     "critical_o2",
+     true,
+     "O2 87.9% < 88% (critical)"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.0"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     true,
+     "O2<90 and RR>45"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 95 vs threshold 150"
+    ],
+    [
+     "tachypnea",
+     true,
+     "RR 46 vs threshold 45"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 87.9% vs age-adjusted threshold 90%"
+    ]
+   ]
+  ],
+  [
+   11,
+   130,
+   80,
+   10,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 130 vs threshold 90"
+    ],
+    [
+     "critical_o2",
+     true,
+     "O2 80% < 88% (critical)"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.0"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 130 vs threshold 150"
+    ],
+    [
+     "tachypnea",
+     false,
+     "RR 10 vs threshold 45"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 80% vs age-adjusted threshold 90%"
+    ]
+   ]
+  ],
+  [
+   11,
+   141,
+   95,
+   41,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 141 vs threshold 90"
+    ],
+    [
+     "critical_o2",
+     false,
+     "O2 95% >= 88%"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.0"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 141 vs threshold 150"
+    ],
+    [
+     "tachypnea",
+     false,
+     "RR 41 vs threshold 45"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 95% vs age-adjusted threshold 90%"
+    ]
+   ]
+  ],
+  [
+   11,
+   200,
+   91,
+   60,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 200 vs threshold 90"
+    ],
+    [
+     "critical_o2",
+     false,
+     "O2 91% >= 88%"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.0"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     true,
+     "HR 200 vs threshold 150"
+    ],
+    [
+     "tachypnea",
+     true,
+     "RR 60 vs threshold 45"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 91% vs age-adjusted threshold 90%"
+    ]
+   ]
+  ],
+  [
+   12,
+   80,
+   90,
+   35,
+   34.0,
+   [
+    [
+     "bradycardia",
+     true,
+     "HR 80 vs threshold 95"
+    ],
+    [
+     "critical_o2",
+     false,
+     "O2 90% >= 88%"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.0"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 80 vs threshold 140"
+    ],
+    [
+     "tachypnea",
+     false,
+     "RR 35 vs threshold 40"
+    ],
+    [
+     "warning_o2",
+     true,
+     "O2 90% vs age-adjusted threshold 91%"
+    ]
+   ]
+  ],
+  [
+   12,
+   100,
+   87.9,
+   46,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 100 vs threshold 95"
+    ],
+    [
+     "critical_o2",
+     true,
+     "O2 87.9% < 88% (critical)"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.0"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     true,
+     "O2<90 and RR>45"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 100 vs threshold 140"
+    ],
+    [
+     "tachypnea",
+     true,
+     "RR 46 vs threshold 40"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 87.9% vs age-adjusted threshold 91%"
+    ]
+   ]
+  ],
+  [
+   12,
+   141,
+   80,
+   10,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 141 vs threshold 95"
+    ],
+    [
+     "critical_o2",
+     true,
+     "O2 80% < 88% (critical)"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.0"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     true,
+     "HR 141 vs threshold 140"
+    ],
+    [
+     "tachypnea",
+     false,
+     "RR 10 vs threshold 40"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 80% vs age-adjusted threshold 91%"
+    ]
+   ]
+  ],
+  [
+   12,
+   151,
+   95,
+   41,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 151 vs threshold 95"
+    ],
+    [
+     "critical_o2",
+     false,
+     "O2 95% >= 88%"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.0"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     true,
+     "HR 151 vs threshold 140"
+    ],
+    [
+     "tachypnea",
+     true,
+     "RR 41 vs threshold 40"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 95% vs age-adjusted threshold 91%"
+    ]
+   ]
+  ],
+  [
+   35,
+   50,
+   91,
+   60,
+   34.0,
+   [
+    [
+     "bradycardia",
+     true,
+     "HR 50 vs threshold 95"
+    ],
+    [
+     "critical_o2",
+     false,
+     "O2 91% >= 88%"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.0"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 50 vs threshold 140"
+    ],
+    [
+     "tachypnea",
+     true,
+     "RR 60 vs threshold 40"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 91% vs age-adjusted threshold 91%"
+    ]
+   ]
+  ],
+  [
+   35,
+   95,
+   90,
+   35,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 95 vs threshold 95"
+    ],
+    [
+     "critical_o2",
+     false,
+     "O2 90% >= 88%"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.0"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 95 vs threshold 140"
+    ],
+    [
+     "tachypnea",
+     false,
+     "RR 35 vs threshold 40"
+    ],
+    [
+     "warning_o2",
+     true,
+     "O2 90% vs age-adjusted threshold 91%"
+    ]
+   ]
+  ],
+  [
+   35,
+   130,
+   87.9,
+   46,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 130 vs threshold 95"
+    ],
+    [
+     "critical_o2",
+     true,
+     "O2 87.9% < 88% (critical)"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.0"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     true,
+     "O2<90 and RR>45"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 130 vs threshold 140"
+    ],
+    [
+     "tachypnea",
+     true,
+     "RR 46 vs threshold 40"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 87.9% vs age-adjusted threshold 91%"
+    ]
+   ]
+  ],
+  [
+   35,
+   151,
+   80,
+   10,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 151 vs threshold 95"
+    ],
+    [
+     "critical_o2",
+     true,
+     "O2 80% < 88% (critical)"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.0"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     true,
+     "HR>150 and O2<88"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     true,
+     "HR 151 vs threshold 140"
+    ],
+    [
+     "tachypnea",
+     false,
+     "RR 10 vs threshold 40"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 80% vs age-adjusted threshold 91%"
+    ]
+   ]
+  ],
+  [
+   35,
+   200,
+   95,
+   41,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 200 vs threshold 95"
+    ],
+    [
+     "critical_o2",
+     false,
+     "O2 95% >= 88%"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.0"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     true,
+     "HR 200 vs threshold 140"
+    ],
+    [
+     "tachypnea",
+     true,
+     "RR 41 vs threshold 40"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 95% vs age-adjusted threshold 91%"
+    ]
+   ]
+  ],
+  [
+   36,
+   80,
+   91,
+   60,
+   34.0,
+   [
+    [
+     "bradycardia",
+     true,
+     "HR 80 vs threshold 100"
+    ],
+    [
+     "critical_o2",
+     false,
+     "O2 91% >= 88%"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.5"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 80 vs threshold 130"
+    ],
+    [
+     "tachypnea",
+     true,
+     "RR 60 vs threshold 35"
+    ],
+    [
+     "warning_o2",
+     true,
+     "O2 91% vs age-adjusted threshold 92%"
+    ]
+   ]
+  ],
+  [
+   36,
+   100,
+   90,
+   35,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 100 vs threshold 100"
+    ],
+    [
+     "critical_o2",
+     false,
+     "O2 90% >= 88%"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.5"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 100 vs threshold 130"
+    ],
+    [
+     "tachypnea",
+     false,
+     "RR 35 vs threshold 35"
+    ],
+    [
+     "warning_o2",
+     true,
+     "O2 90% vs age-adjusted threshold 92%"
+    ]
+   ]
+  ],
+  [
+   36,
+   141,
+   87.9,
+   46,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 141 vs threshold 100"
+    ],
+    [
+     "critical_o2",
+     true,
+     "O2 87.9% < 88% (critical)"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.5"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     true,
+     "O2<90 and RR>45"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     true,
+     "HR 141 vs threshold 130"
+    ],
+    [
+     "tachypnea",
+     true,
+     "RR 46 vs threshold 35"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 87.9% vs age-adjusted threshold 92%"
+    ]
+   ]
+  ],
+  [
+   36,
+   200,
+   80,
+   10,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 200 vs threshold 100"
+    ],
+    [
+     "critical_o2",
+     true,
+     "O2 80% < 88% (critical)"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.5"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     true,
+     "HR>150 and O2<88"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     true,
+     "HR 200 vs threshold 130"
+    ],
+    [
+     "tachypnea",
+     false,
+     "RR 10 vs threshold 35"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 80% vs age-adjusted threshold 92%"
+    ]
+   ]
+  ],
+  [
+   100,
+   50,
+   95,
+   41,
+   34.0,
+   [
+    [
+     "bradycardia",
+     true,
+     "HR 50 vs threshold 100"
+    ],
+    [
+     "critical_o2",
+     false,
+     "O2 95% >= 88%"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.5"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 50 vs threshold 130"
+    ],
+    [
+     "tachypnea",
+     true,
+     "RR 41 vs threshold 35"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 95% vs age-adjusted threshold 92%"
+    ]
+   ]
+  ],
+  [
+   100,
+   95,
+   91,
+   60,
+   34.0,
+   [
+    [
+     "bradycardia",
+     true,
+     "HR 95 vs threshold 100"
+    ],
+    [
+     "critical_o2",
+     false,
+     "O2 91% >= 88%"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.5"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 95 vs threshold 130"
+    ],
+    [
+     "tachypnea",
+     true,
+     "RR 60 vs threshold 35"
+    ],
+    [
+     "warning_o2",
+     true,
+     "O2 91% vs age-adjusted threshold 92%"
+    ]
+   ]
+  ],
+  [
+   100,
+   130,
+   90,
+   35,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 130 vs threshold 100"
+    ],
+    [
+     "critical_o2",
+     false,
+     "O2 90% >= 88%"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.5"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     false,
+     "not all hypovolemic_shock conditions met"
+    ],
+    [
+     "respiratory_distress",
+     false,
+     "not all respiratory_distress conditions met"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     false,
+     "HR 130 vs threshold 130"
+    ],
+    [
+     "tachypnea",
+     false,
+     "RR 35 vs threshold 35"
+    ],
+    [
+     "warning_o2",
+     true,
+     "O2 90% vs age-adjusted threshold 92%"
+    ]
+   ]
+  ],
+  [
+   100,
+   151,
+   87.9,
+   46,
+   34.0,
+   [
+    [
+     "bradycardia",
+     false,
+     "HR 151 vs threshold 100"
+    ],
+    [
+     "critical_o2",
+     true,
+     "O2 87.9% < 88% (critical)"
+    ],
+    [
+     "fever",
+     false,
+     "Temp 34.0 vs threshold 39.5"
+    ],
+    [
+     "hypothermia",
+     true,
+     "Temp 34.0 < 35.0"
+    ],
+    [
+     "hypovolemic_shock",
+     true,
+     "HR>150 and O2<88"
+    ],
+    [
+     "respiratory_distress",
+     true,
+     "O2<90 and RR>45"
+    ],
+    [
+     "septic_shock",
+     false,
+     "not all septic_shock conditions met"
+    ],
+    [
+     "tachycardia",
+     true,
+     "HR 151 vs threshold 130"
+    ],
+    [
+     "tachypnea",
+     true,
+     "RR 46 vs threshold 35"
+    ],
+    [
+     "warning_o2",
+     false,
+     "O2 87.9% vs age-adjusted threshold 92%"
+    ]
+   ]
+  ]
+ ]
+}

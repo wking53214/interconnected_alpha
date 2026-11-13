@@ -13,7 +13,7 @@ if os.environ.get("ALPHA_REQUIRE_CNS") == "1":  # CI: a missing cns is a failure
 else:
     gate = pytest.importorskip("cns.gate")
 
-from alpha import VitalsObservation, observe  # noqa: E402
+from alpha.packs.pediatric_vitals import VitalsObservation, observe  # noqa: E402
 from alpha.cns_connector import CONTEXT_SCHEMA, KEYSET_SUBJECT, binds, keyset_content, keyset_digest  # noqa: E402
 
 CTX = {"schema": CONTEXT_SCHEMA, "entity_id": "p1", "event_id": "ev-1", "run_id": "run-1"}

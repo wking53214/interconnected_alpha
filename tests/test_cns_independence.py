@@ -37,7 +37,7 @@ def test_the_package_and_its_connector_import_with_cns_blocked():
 
 def test_alpha_still_does_its_job_with_cns_blocked():
     ok(run("""
-        from alpha import VitalsObservation, observe
+        from alpha.packs.pediatric_vitals import VitalsObservation, observe
         ks = observe(VitalsObservation(heart_rate=145, oxygen_saturation=90.0, respiratory_rate=36,
                                        temperature=39.6, age_months=48))
         assert ks.is_present("septic_shock") and ks.is_present("fever") and len(ks) == 10, ks
@@ -47,7 +47,7 @@ def test_alpha_still_does_its_job_with_cns_blocked():
 
 def test_the_connector_says_what_is_missing_when_cns_is_blocked():
     ok(run("""
-        from alpha import VitalsObservation, observe
+        from alpha.packs.pediatric_vitals import VitalsObservation, observe
         from alpha.cns_connector import CnsNotInstalled, binds, cns_available, keyset_content, keyset_digest
         assert cns_available() is False
         ks = observe(VitalsObservation(heart_rate=145, oxygen_saturation=90.0, respiratory_rate=36,
