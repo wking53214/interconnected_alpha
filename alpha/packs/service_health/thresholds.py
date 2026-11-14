@@ -8,7 +8,8 @@ Approval, stated plainly: nobody has approved these values. They are synthetic e
 tuned to no real service. ``approved_by`` and ``justification`` say so, and ``approval_date`` is the date of the declaration.
 """
 
-from typing import Dict, Tuple
+from types import MappingProxyType
+from typing import Any, Iterable, Mapping, Tuple
 
 from ...core import Parameter
 
@@ -38,7 +39,16 @@ PARAMETERS: Tuple[Parameter, ...] = tuple(
     for column, value in row.items()
 )
 
-SERVICE_NORMS: Dict[str, Dict[str, float]] = {
-    tier: {column: next(p.value for p in PARAMETERS if p.name == f"{tier}_{column}") for column in row}
-    for tier, row in _VALUES.items()
-}
+TIER_NAMES = tuple(_VALUES)
+NORM_COLUMNS = tuple(_COLUMNS)
+
+
+def norms_from(parameters: Iterable[Any]) -> Mapping[str, Mapping[str, float]]:
+    """The detectors' table, read from a pack's parameters (names ``<tier>_<column>``), read-only. A missing parameter is an error."""
+    by_name = {p.name: p.value for p in parameters}
+    return MappingProxyType({tier: MappingProxyType({column: by_name[f"{tier}_{column}"] for column in NORM_COLUMNS})
+                             for tier in TIER_NAMES})
+
+
+# Derived from PARAMETERS and read-only: the default table, and the same values the pack declares.
+SERVICE_NORMS: Mapping[str, Mapping[str, float]] = norms_from(PARAMETERS)

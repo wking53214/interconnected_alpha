@@ -240,11 +240,15 @@ CLINICAL = re.compile(r"patient|vital|pediatric|paediatric|sepsis|tachy|fever|ox
                       re.IGNORECASE)
 
 
+OPERATIONS = re.compile(r"latency|queue|backlog|outage|error[ _]rate|service[ _]health|degraded", re.IGNORECASE)
+
+
 def test_the_core_names_no_domain():
+    """Neither pack's vocabulary appears in the core or the package root: a test for one domain only would pass a core that names the other."""
     offenders = []
-    for path in sorted((ROOT / "alpha" / "core").glob("*.py")):
+    for path in sorted((ROOT / "alpha" / "core").glob("*.py")) + [ROOT / "alpha" / "__init__.py"]:
         for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
-            if CLINICAL.search(line):
+            if CLINICAL.search(line) or OPERATIONS.search(line):
                 offenders.append(f"{path.name}:{number}: {line.strip()}")
     assert not offenders, offenders
 

@@ -7,7 +7,7 @@ from zeta import KeySet
 from ...core import DomainPack, Parameter
 from .observation import ServiceObservation
 from .registry import observe
-from .thresholds import PARAMETERS
+from .thresholds import PARAMETERS, norms_from
 
 
 class ServiceHealthPack(DomainPack):
@@ -19,5 +19,15 @@ class ServiceHealthPack(DomainPack):
     def parameters(self) -> Tuple[Parameter, ...]:
         return PARAMETERS
 
+    def _norms(self):
+        """The threshold table, built once from this pack's parameters: the values the registry validated are the values used."""
+        if not hasattr(self, "_norms_cache"):
+            self._norms_cache = norms_from(self.parameters())
+        return self._norms_cache
+
     def observe(self, raw: ServiceObservation) -> KeySet:
-        return observe(raw)
+        if type(raw) is not ServiceObservation:
+            raise TypeError(f"ServiceHealthPack.observe needs exactly a ServiceObservation, got {type(raw).__name__}")
+        # a fresh object: its own validation runs again, so an observation edited after construction is refused here
+        raw = ServiceObservation(raw.latency_p95_ms, raw.error_rate, raw.queue_depth, raw.tier)
+        return observe(raw, self._norms())

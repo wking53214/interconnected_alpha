@@ -17,14 +17,21 @@ import math
 import re
 import threading
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import date
 from typing import Any, Dict, List, Tuple
 
-from zeta import KeySet
+from zeta import Key, KeySet
 
-_NAME = re.compile(r"^[a-z][a-z0-9_]*$")
-_VERSION = re.compile(r"^\d+\.\d+\.\d+$")
+_NAME = re.compile(r"[a-z][a-z0-9_]*")
+_NUMBER = r"(?:0|[1-9][0-9]*)"
+_VERSION = re.compile(rf"{_NUMBER}\.{_NUMBER}\.{_NUMBER}")
+_ISO_DATE = re.compile(r"[0-9]{4}-[0-9]{2}-[0-9]{2}")
+
+
+def _name_ok(value: Any) -> bool:
+    """An exact str of lowercase ASCII letters, digits and underscores starting with a letter. The whole string must match."""
+    return type(value) is str and _NAME.fullmatch(value) is not None
 
 
 class PackError(Exception):
@@ -82,12 +89,20 @@ def _exact_str(value: Any) -> bool:
     return type(value) is str
 
 
+def _finite(number: Any) -> bool:
+    """``math.isfinite`` that says False, not OverflowError, for an integer too large for a float."""
+    try:
+        return math.isfinite(number)
+    except OverflowError:
+        return False
+
+
 def _parameter_problems(index: int, parameter: Any) -> List[str]:
     if type(parameter) is not Parameter:
         return [f"parameters()[{index}] is not exactly a Parameter: {type(parameter).__name__}"]
     label = parameter.name if _exact_str(parameter.name) else f"parameters()[{index}]"
     out: List[str] = []
-    if not _exact_str(parameter.name) or not _NAME.match(parameter.name):
+    if not _name_ok(parameter.name):
         out.append(f"{label}: name must be an exact str of lowercase letters, digits and underscores starting with a letter")
     for field in ("description", "approved_by", "justification"):
         value = getattr(parameter, field)
@@ -97,7 +112,7 @@ def _parameter_problems(index: int, parameter: Any) -> List[str]:
         out.append(f"{label}: approval_date must be an exact str in the form YYYY-MM-DD")
     else:
         try:
-            if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", parameter.approval_date):
+            if not _ISO_DATE.fullmatch(parameter.approval_date):
                 raise ValueError
             date.fromisoformat(parameter.approval_date)
         except ValueError:
@@ -107,7 +122,7 @@ def _parameter_problems(index: int, parameter: Any) -> List[str]:
         number = getattr(parameter, field)
         if type(number) not in (int, float):
             out.append(f"{label}: {field} must be an exact int or float (a bool or another type is refused), got {type(number).__name__}")
-        elif not math.isfinite(number):
+        elif not _finite(number):
             out.append(f"{label}: {field} must be finite, got {number!r}")
         else:
             numbers[field] = number
@@ -129,27 +144,29 @@ def _read_parameters(pack: Any) -> Tuple[Any, List[str]]:
     return declared, []
 
 
-def _problems_with(pack: Any, declared: Any, read_problems: List[str]) -> List[str]:
+def _read_identity(pack: Any) -> Dict[str, Any]:
+    """Read NAME, VERSION, DOMAIN and KEYS once. What is validated and kept is exactly this read, never a second one."""
+    return {field: getattr(pack, field, None) for field in ("NAME", "VERSION", "DOMAIN", "KEYS")}
+
+
+def _problems_with(pack: Any, declared: Any, read_problems: List[str], identity: Dict[str, Any]) -> List[str]:
     if not isinstance(pack, DomainPack):
         return [f"not a DomainPack: {type(pack).__name__}"]
     out: List[str] = []
-    name: Any = getattr(pack, "NAME", None)
-    version: Any = getattr(pack, "VERSION", None)
-    domain: Any = getattr(pack, "DOMAIN", None)
-    keys: Any = getattr(pack, "KEYS", None)
-    if not _exact_str(name) or not _NAME.match(name):
+    name, version, domain, keys = identity["NAME"], identity["VERSION"], identity["DOMAIN"], identity["KEYS"]
+    if not _name_ok(name):
         out.append("NAME must be an exact str of lowercase letters, digits and underscores starting with a letter")
-    if not _exact_str(version) or not _VERSION.match(version):
+    if not (_exact_str(version) and _VERSION.fullmatch(version)):
         out.append("VERSION must be an exact str of the form MAJOR.MINOR.PATCH")
     if not _exact_str(domain) or not domain.strip():
         out.append("DOMAIN must be a non-empty exact str")
     if type(keys) is not tuple or not keys:
         out.append("KEYS must be a non-empty tuple of Key names")
     else:
-        bad = [k for k in keys if not _exact_str(k) or not k.strip()]
+        bad = [k for k in keys if not _name_ok(k)]
         if bad:
-            out.append(f"KEYS must hold only non-empty exact str names; got {bad!r}")
-        names = [k for k in keys if _exact_str(k)]
+            out.append(f"KEYS must hold only exact str names of lowercase ASCII letters, digits and underscores starting with a letter; got {bad!r}")
+        names = [k for k in keys if _name_ok(k)]
         repeated = sorted({k for k in names if names.count(k) > 1})
         if repeated:
             out.append(f"KEYS names {repeated!r} appear twice")
@@ -169,9 +186,9 @@ def _problems_with(pack: Any, declared: Any, read_problems: List[str]) -> List[s
 def pack_problems(pack: Any) -> List[str]:
     """Every way ``pack`` breaks the contract, in one list (empty when it keeps it)."""
     if not isinstance(pack, DomainPack):
-        return _problems_with(pack, None, [])
+        return _problems_with(pack, None, [], {})
     declared, read_problems = _read_parameters(pack)
-    return _problems_with(pack, declared, read_problems)
+    return _problems_with(pack, declared, read_problems, _read_identity(pack))
 
 
 def validate_pack(pack: Any) -> None:
@@ -181,51 +198,84 @@ def validate_pack(pack: Any) -> None:
         raise PackValidationError(problems)
 
 
+@dataclass(frozen=True)
+class _Entry:
+    """What the registry validated and keeps: its own copies, never the pack's objects read again."""
+
+    pack: DomainPack
+    name: str
+    version: str
+    keys: Tuple[str, ...]
+    parameters: Tuple[Parameter, ...]
+
+
 class PackRegistry:
-    """Loads packs, fail-loud. A name is registered once; nothing is defaulted."""
+    """Loads packs, fail-loud. A name is registered once; nothing is defaulted.
+
+    At registration the registry reads the pack's NAME, VERSION, DOMAIN, KEYS and parameters once, validates exactly what it read, and
+    keeps those values and its own copies of the parameters. Later calls use the kept values, so a pack whose attributes change after
+    registration cannot change what was admitted, its recorded identity or the Keys it is allowed to emit.
+    """
 
     def __init__(self) -> None:
         self._lock = threading.Lock()
-        self._packs: Dict[str, DomainPack] = {}
-        self._parameters: Dict[str, Tuple[Parameter, ...]] = {}
+        self._entries: Dict[str, _Entry] = {}
 
     def register(self, pack: Any) -> None:
         if not isinstance(pack, DomainPack):
             raise PackValidationError(pack_problems(pack))
-        declared, read_problems = _read_parameters(pack)  # read once: the same snapshot is validated and kept
-        problems = _problems_with(pack, declared, read_problems)
+        identity = _read_identity(pack)
+        declared, read_problems = _read_parameters(pack)  # read once: this snapshot is validated and kept
+        if declared is not None and all(type(p) is Parameter for p in declared):
+            declared = tuple(replace(p) for p in declared)  # the registry's own copies: later edits to the pack's do not reach them
+        problems = _problems_with(pack, declared, read_problems, identity)
         if problems:
             raise PackValidationError(problems)
+        entry = _Entry(pack=pack, name=identity["NAME"], version=identity["VERSION"], keys=identity["KEYS"], parameters=declared)
         with self._lock:
-            if pack.NAME in self._packs:
-                raise PackError(f"a pack named {pack.NAME!r} is already registered (version {self._packs[pack.NAME].VERSION})")
-            self._packs[pack.NAME] = pack
-            self._parameters[pack.NAME] = declared
+            if entry.name in self._entries:
+                raise PackError(f"a pack named {entry.name!r} is already registered (version {self._entries[entry.name].version})")
+            self._entries[entry.name] = entry
+
+    def _entry(self, name: str) -> _Entry:
+        with self._lock:
+            if name not in self._entries:
+                raise PackError(f"no pack named {name!r} is registered")
+            return self._entries[name]
 
     def get(self, name: str) -> DomainPack:
-        with self._lock:
-            if name not in self._packs:
-                raise PackError(f"no pack named {name!r} is registered")
-            return self._packs[name]
+        return self._entry(name).pack
+
+    def identity(self, name: str) -> str:
+        """``pack:<name>/<version>`` from the values read and validated at registration, not from the pack as it is now."""
+        entry = self._entry(name)
+        return f"pack:{entry.name}/{entry.version}"
 
     def parameters(self, name: str) -> Tuple[Parameter, ...]:
         """The parameters as they were when the pack registered."""
-        with self._lock:
-            if name not in self._parameters:
-                raise PackError(f"no pack named {name!r} is registered")
-            return self._parameters[name]
+        return self._entry(name).parameters
 
     def names(self) -> List[str]:
         with self._lock:
-            return sorted(self._packs)
+            return sorted(self._entries)
 
     def observe(self, name: str, raw: Any) -> KeySet:
-        """Run the named pack and hold it to what it declared: exactly a ``KeySet`` whose Keys are all in ``KEYS``."""
-        pack = self.get(name)
-        keys = pack.observe(raw)
-        if type(keys) is not KeySet:
-            raise PackError(f"pack {name!r} returned {type(keys).__name__}, not exactly a zeta KeySet")
-        undeclared = sorted({key.name for key in keys.all_keys()} - set(pack.KEYS))
+        """Run the named pack and hold it to what it declared. What is returned is a ``KeySet`` the registry built itself.
+
+        The pack must return exactly a ``zeta.KeySet`` of exact ``Key`` objects with exact ``str`` names, every one in the ``KEYS`` read at
+        registration. The Keys are read through the classes' own accessors (not the instance's, which a pack could shadow) and copied
+        into a new ``KeySet``, so nothing the pack attached to its own objects reaches the caller.
+        """
+        entry = self._entry(name)
+        returned = entry.pack.observe(raw)
+        if type(returned) is not KeySet:
+            raise PackError(f"pack {name!r} returned {type(returned).__name__}, not exactly a zeta KeySet")
+        rebuilt = []
+        for key in KeySet.all_keys(returned):
+            if type(key) is not Key or type(key.name) is not str:
+                raise PackError(f"pack {name!r} returned a Key that is not exactly a zeta Key with an exact str name")
+            rebuilt.append(Key(name=key.name, present=key.present, confidence=key.confidence, reason=key.reason))
+        undeclared = sorted({key.name for key in rebuilt} - set(entry.keys))
         if undeclared:
             raise PackError(f"pack {name!r} emitted Keys it did not declare in KEYS: {undeclared}")
-        return keys
+        return KeySet(rebuilt, min_confidence=returned.min_confidence)
