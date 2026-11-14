@@ -34,5 +34,18 @@ class VitalsObservation:
             value = getattr(self, field_name)
             if value is None:
                 raise ValueError(f"VitalsObservation.{field_name} is required and cannot be None")
-            if not math.isfinite(value):
-                raise ValueError(f"VitalsObservation.{field_name} must be finite, got {value!r}")
+            if type(value) not in (int, float):
+                raise TypeError(f"VitalsObservation.{field_name} must be an exact int or float (a bool or another type is refused), "
+                                f"got {type(value).__name__}")
+            try:
+                finite = math.isfinite(value)
+            except OverflowError:  # an integer too large for a float
+                finite = False
+            if not finite:
+                raise ValueError(f"VitalsObservation.{field_name} must be finite, got a value that is not a finite number")
+        age = self.age_months
+        if age is not None:
+            if type(age) is not int:
+                raise TypeError(f"VitalsObservation.age_months must be None or an exact int, got {type(age).__name__}")
+            if age < 0:
+                raise ValueError(f"VitalsObservation.age_months cannot be negative, got {age}")

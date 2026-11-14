@@ -16,7 +16,7 @@ from zeta import KeySet
 from ...core import DomainPack, Parameter
 from .detectors import ALL_DETECTORS
 from .registry import observe
-from .thresholds import PEDIATRIC_NORMS, norms_from
+from .thresholds import AGE_GROUPS, PEDIATRIC_NORMS, norms_from
 from .vitals import VitalsObservation
 
 _DECLARED_ON = "2026-11-13"
@@ -64,6 +64,11 @@ class PediatricVitalsPack(DomainPack):
                     approval_date=_DECLARED_ON, justification=_JUSTIFICATION,
                 ))
         return tuple(out)
+
+    def parameter_problems(self, parameters):
+        by_name = {p.name: p.value for p in parameters}
+        return [f"{group}_hr_low ({by_name[f'{group}_hr_low']}) is not below {group}_hr_high ({by_name[f'{group}_hr_high']})"
+                for group in AGE_GROUPS if not by_name[f"{group}_hr_low"] < by_name[f"{group}_hr_high"]]
 
     def _norms(self):
         """The threshold table, built once from this pack's parameters: the values the registry validated are the values used."""

@@ -182,16 +182,17 @@ def test_a_declared_service_threshold_is_the_one_the_detector_uses():
         NAME = "looser_service"
 
         def parameters(self):
-            return tuple(dataclasses.replace(p, value=2000.0) if p.name == "interactive_latency_high" else p
+            return tuple(dataclasses.replace(p, value=800.0) if p.name == "interactive_latency_high" else p
                          for p in super().parameters())
 
     registry = PackRegistry()
     registry.register(Looser())
     declared = {p.name: p.value for p in registry.parameters("looser_service")}
-    assert declared["interactive_latency_high"] == 2000.0
-    keys = registry.observe("looser_service", BAD_SERVICE)  # 1500 ms is under the declared 2000
+    assert declared["interactive_latency_high"] == 800.0
+    reading = ServiceObservation(latency_p95_ms=500.0, error_rate=0.0, queue_depth=0, tier="interactive")
+    keys = registry.observe("looser_service", reading)  # 500 ms is over the stock 300 but under the declared 800
     assert "latency_high" not in keys.names_present()
-    assert "2000" in keys.get("latency_high").reason
+    assert "800" in keys.get("latency_high").reason
 
 
 def test_a_declared_pediatric_threshold_is_the_one_the_detector_uses():

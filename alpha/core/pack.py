@@ -5,8 +5,8 @@ data. A parameter is named, typed, bounded and documented, and carries who appro
 a value a pack never declared is a value nobody can trace. Validation is total (every violation is listed, not just the first)
 and runs on the load path, so ``PackRegistry.register`` never admits an invalid pack.
 
-The registry also holds a pack to what it declared when it observes: the result must be exactly a ``zeta.KeySet`` and every
-Key in it must be one the pack declared in ``KEYS``.
+The registry also holds a pack to what it declared when it observes: the result must be exactly a ``zeta.KeySet``, every Key in it
+must be one the pack declared in ``KEYS``, and every declared Key must be there (present or not).
 
 What this does not do: it does not judge, decide or authorise (alpha detects named Keys and never says PASS or BREACH), it does
 not authenticate that a pack is who it says it is, and it does not check that a parameter's approval is true. A pack's identity
@@ -75,6 +75,14 @@ class DomainPack(ABC):
     @abstractmethod
     def observe(self, raw: Any) -> KeySet:
         """Detect this pack's Keys in one raw observation of its own type."""
+
+    def parameter_problems(self, parameters: Tuple[Parameter, ...]) -> List[str]:
+        """Relations between this pack's parameters that bounds alone cannot state (for example one limit not above another).
+
+        Called by the registry on the validated copies, only when every parameter is individually valid. Return a message per
+        violation; the default states none. A check that raises is reported as a problem, not a crash.
+        """
+        return []
 
     def identity(self) -> str:
         return pack_identity(self)
@@ -180,6 +188,11 @@ def _problems_with(pack: Any, declared: Any, read_problems: List[str], identity:
         for parameter_name, count in sorted(seen.items()):
             if count > 1:
                 out.append(f"{parameter_name}: declared {count} times; a parameter is named once ({parameter_name} appears twice)")
+        if not out and all(type(p) is Parameter for p in declared):
+            try:
+                out.extend(str(m) for m in pack.parameter_problems(declared))
+            except Exception as exc:  # a relation check that cannot run is a problem with the pack, not a crash here
+                out.append(f"parameter_problems raised {type(exc).__name__}: {exc}")
     return out
 
 
@@ -278,4 +291,7 @@ class PackRegistry:
         undeclared = sorted({key.name for key in rebuilt} - set(entry.keys))
         if undeclared:
             raise PackError(f"pack {name!r} emitted Keys it did not declare in KEYS: {undeclared}")
+        omitted = sorted(set(entry.keys) - {key.name for key in rebuilt})
+        if omitted:
+            raise PackError(f"pack {name!r} did not emit Keys it declared in KEYS: {omitted} (every declared Key is returned on every observation, present or not)")
         return KeySet(rebuilt, min_confidence=returned.min_confidence)
