@@ -62,7 +62,7 @@ examples/service_degradation.py   the same wiring in another industry
 
 `alpha.core` holds a domain-blind contract and a registry; it names no domain, and neither does anything else in `alpha` outside `alpha/packs/` (a test checks that).
 The pediatric-vitals detectors moved into the pack `alpha.packs.pediatric_vitals` with no change to what they say: a digest of every detector output
-(names, presence, confidence, reasons, key fingerprint) over a grid of 20,160 readings, captured from the code before the move
+(names, presence, confidence, reasons and each set's `min_confidence`; zeta's key fingerprint is a function of exactly those fields) over a grid of 20,160 readings, captured from the code before the move
 (`tests/golden_pediatric_keys.json`), is reproduced exactly. The old top-level names (`alpha.VitalsObservation`, `alpha.observe`, `alpha.PEDIATRIC_NORMS`,
 `alpha.detect_all` and the rest) and module paths (`alpha.vitals`, `alpha.detectors`, ...) are gone: a deliberate clean break, since alpha has no tags.
 
@@ -72,10 +72,19 @@ and its `parameters()` as data: each `Parameter` is named, typed (an exact `int`
 `PackRegistry.register` validates totally, listing every violation in one `PackValidationError`, and refuses an invalid pack, a pack whose
 name is already registered, and anything that is not a `DomainPack`. `PackRegistry.observe` holds a pack to what it declared: the result
 must be exactly a `zeta.KeySet` (a subclass is refused) and every Key must be one the pack declared. The parameters are read once, at
-registration, and that snapshot is what the registry keeps. `pack_identity(pack)` is `pack:<name>/<version>`, for a producer to record with
-what it observed (for example in the origin's `transformation` field).
+registration, and that snapshot is what the registry keeps, together with its own copies of the parameters and the `NAME`, `VERSION` and
+`KEYS` it read and validated once. `PackRegistry.observe` returns a `KeySet` the registry built itself, from exact `Key` objects with exact `str` names read
+through the classes' own accessors, so nothing a pack attaches to its objects reaches the caller. `PackRegistry.identity(name)` is
+`pack:<name>/<version>` from the values read at registration, for a producer to record with what it observed (for example in the origin's
+`transformation` field); `pack_identity(pack)` reads the pack as it is now.
 
-**The second pack.** `alpha.packs.service_health` takes a `ServiceObservation` (p95 latency in ms, error rate as a fraction, queue depth, and a tier of `interactive` or `batch`) and emits five Keys: `latency_high`, `latency_critical`, `error_burst`, `queue_backlog` and `degraded_service` (high latency together with an error burst). Its 8 thresholds are declared as bounded parameters and are the single source the detectors read. They are synthetic, tuned to no real service, and declared "unapproved" the same way. A suite (`tests/test_two_packs_one_contract.py`) holds both packs to the same contract: both register in one registry, are held to the Keys they declared, observe deterministically, record their identity in the existing `origin.transformation` field (which changes the bound content, so the identity is part of what is bound), and feed Zeta locks. `examples/service_degradation.py` runs a service timeline through a Zeta lock.
+**What the contract does not do.** A pack is trusted, in-process code: the registry guards what it validated against a pack that changes
+after registration, not against a pack that is wrong in a consistent way. It does not check relations between parameters (a
+`latency_critical` below `latency_high` is accepted if each is in bounds), that a pack emits every Key it declared, or that approval text is
+true; it cannot stop a caller from rebinding a module's names. The raw observation types differ in strictness: `ServiceObservation`
+refuses `bool` and non-numeric readings, `VitalsObservation` (unchanged by the move) does not refuse a `bool` or an unusual `age_months`.
+
+**The second pack.** `alpha.packs.service_health` takes a `ServiceObservation` (p95 latency in ms, error rate as a fraction, queue depth, and a tier of `interactive` or `batch`) and emits five Keys: `latency_high`, `latency_critical`, `error_burst`, `queue_backlog` and `degraded_service` (high latency together with an error burst). Its 8 thresholds are declared as bounded parameters and are what the detectors use: each pack builds its threshold table from its own declared parameters, and the tables are read-only. They are synthetic, tuned to no real service, and declared "unapproved" the same way. A suite (`tests/test_two_packs_one_contract.py`) holds both packs to the same contract: both register in one registry, are held to the Keys they declared, observe deterministically, record their identity in the existing `origin.transformation` field (which changes the bound content, so the identity is part of what is bound), and feed Zeta locks. `examples/service_degradation.py` runs a service timeline through a Zeta lock.
 
 The pediatric pack declares its 25 age-group thresholds (`PEDIATRIC_NORMS`) as bounded parameters. **Nobody has approved them**: `approved_by` says
 "unapproved: copied verbatim from OBSERVE ...", `approval_date` is the date of the declaration, and the justification repeats that they are not

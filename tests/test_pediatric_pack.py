@@ -1,7 +1,7 @@
 """The pediatric-vitals pack: today's detectors, moved under alpha.packs.pediatric_vitals and declared as a domain pack.
 
-The golden check is the point of the move: a digest of every detector output (names, presence, confidence, reasons, the key
-fingerprint) over a grid of 20,160 readings, captured from the code BEFORE it moved (tests/golden_pediatric_keys.json), must be
+The golden check is the point of the move: a digest of every detector output (names, presence, confidence, reasons and each
+set's min_confidence; zeta's key fingerprint is a function of the same fields) over a grid of 20,160 readings, captured from the code BEFORE it moved (tests/golden_pediatric_keys.json), must be
 reproduced exactly by the code after it moved.
 """
 import importlib.util
