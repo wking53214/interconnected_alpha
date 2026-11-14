@@ -7,7 +7,7 @@ from zeta import KeySet
 from ...core import DomainPack, Parameter
 from .observation import ServiceObservation
 from .registry import observe
-from .thresholds import PARAMETERS, norms_from
+from .thresholds import PARAMETERS, TIER_NAMES, norms_from
 
 
 class ServiceHealthPack(DomainPack):
@@ -18,6 +18,12 @@ class ServiceHealthPack(DomainPack):
 
     def parameters(self) -> Tuple[Parameter, ...]:
         return PARAMETERS
+
+    def parameter_problems(self, parameters):
+        by_name = {p.name: p.value for p in parameters}
+        return [f"{tier}_latency_critical ({by_name[f'{tier}_latency_critical']}) is below {tier}_latency_high "
+                f"({by_name[f'{tier}_latency_high']}); critical latency is also high latency"
+                for tier in TIER_NAMES if by_name[f"{tier}_latency_critical"] < by_name[f"{tier}_latency_high"]]
 
     def _norms(self):
         """The threshold table, built once from this pack's parameters: the values the registry validated are the values used."""
