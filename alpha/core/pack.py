@@ -23,8 +23,15 @@ from typing import Any, Dict, List, Tuple
 
 from zeta import KeySet
 
-_NAME = re.compile(r"^[a-z][a-z0-9_]*$")
-_VERSION = re.compile(r"^\d+\.\d+\.\d+$")
+_NAME = re.compile(r"[a-z][a-z0-9_]*")
+_NUMBER = r"(?:0|[1-9][0-9]*)"
+_VERSION = re.compile(rf"{_NUMBER}\.{_NUMBER}\.{_NUMBER}")
+_ISO_DATE = re.compile(r"[0-9]{4}-[0-9]{2}-[0-9]{2}")
+
+
+def _name_ok(value: Any) -> bool:
+    """An exact str of lowercase ASCII letters, digits and underscores starting with a letter. The whole string must match."""
+    return type(value) is str and _NAME.fullmatch(value) is not None
 
 
 class PackError(Exception):
@@ -82,12 +89,20 @@ def _exact_str(value: Any) -> bool:
     return type(value) is str
 
 
+def _finite(number: Any) -> bool:
+    """``math.isfinite`` that says False, not OverflowError, for an integer too large for a float."""
+    try:
+        return math.isfinite(number)
+    except OverflowError:
+        return False
+
+
 def _parameter_problems(index: int, parameter: Any) -> List[str]:
     if type(parameter) is not Parameter:
         return [f"parameters()[{index}] is not exactly a Parameter: {type(parameter).__name__}"]
     label = parameter.name if _exact_str(parameter.name) else f"parameters()[{index}]"
     out: List[str] = []
-    if not _exact_str(parameter.name) or not _NAME.match(parameter.name):
+    if not _name_ok(parameter.name):
         out.append(f"{label}: name must be an exact str of lowercase letters, digits and underscores starting with a letter")
     for field in ("description", "approved_by", "justification"):
         value = getattr(parameter, field)
@@ -97,7 +112,7 @@ def _parameter_problems(index: int, parameter: Any) -> List[str]:
         out.append(f"{label}: approval_date must be an exact str in the form YYYY-MM-DD")
     else:
         try:
-            if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", parameter.approval_date):
+            if not _ISO_DATE.fullmatch(parameter.approval_date):
                 raise ValueError
             date.fromisoformat(parameter.approval_date)
         except ValueError:
@@ -107,7 +122,7 @@ def _parameter_problems(index: int, parameter: Any) -> List[str]:
         number = getattr(parameter, field)
         if type(number) not in (int, float):
             out.append(f"{label}: {field} must be an exact int or float (a bool or another type is refused), got {type(number).__name__}")
-        elif not math.isfinite(number):
+        elif not _finite(number):
             out.append(f"{label}: {field} must be finite, got {number!r}")
         else:
             numbers[field] = number
@@ -137,19 +152,19 @@ def _problems_with(pack: Any, declared: Any, read_problems: List[str]) -> List[s
     version: Any = getattr(pack, "VERSION", None)
     domain: Any = getattr(pack, "DOMAIN", None)
     keys: Any = getattr(pack, "KEYS", None)
-    if not _exact_str(name) or not _NAME.match(name):
+    if not _name_ok(name):
         out.append("NAME must be an exact str of lowercase letters, digits and underscores starting with a letter")
-    if not _exact_str(version) or not _VERSION.match(version):
+    if not (_exact_str(version) and _VERSION.fullmatch(version)):
         out.append("VERSION must be an exact str of the form MAJOR.MINOR.PATCH")
     if not _exact_str(domain) or not domain.strip():
         out.append("DOMAIN must be a non-empty exact str")
     if type(keys) is not tuple or not keys:
         out.append("KEYS must be a non-empty tuple of Key names")
     else:
-        bad = [k for k in keys if not _exact_str(k) or not k.strip()]
+        bad = [k for k in keys if not _name_ok(k)]
         if bad:
-            out.append(f"KEYS must hold only non-empty exact str names; got {bad!r}")
-        names = [k for k in keys if _exact_str(k)]
+            out.append(f"KEYS must hold only exact str names of lowercase ASCII letters, digits and underscores starting with a letter; got {bad!r}")
+        names = [k for k in keys if _name_ok(k)]
         repeated = sorted({k for k in names if names.count(k) > 1})
         if repeated:
             out.append(f"KEYS names {repeated!r} appear twice")
