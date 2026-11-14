@@ -137,7 +137,7 @@ def test_what_the_registry_returns_is_built_by_the_registry_and_equals_what_the_
 
     class Mark(Plain):
         def observe(self, raw):
-            ks = KeySet([Key("k_high", present=True, confidence=0.75, reason="r")], min_confidence=0.5)
+            ks = KeySet([Key("k_high", present=True, confidence=0.75, reason="r")])
             ks.marker = "kept"
             returned.append(ks)
             return ks
@@ -147,7 +147,7 @@ def test_what_the_registry_returns_is_built_by_the_registry_and_equals_what_the_
     out = registry.observe("plain_pack", 1.0)
     assert out is not returned[0] and not hasattr(out, "marker")
     assert out.fingerprint() == returned[0].fingerprint()
-    assert out.min_confidence == 0.5
+    assert out.min_confidence == 0.0 and out.get("k_high").confidence == 0.75
 
 
 def test_a_key_that_is_not_exactly_a_key_is_refused():
