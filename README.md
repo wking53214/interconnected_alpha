@@ -69,9 +69,9 @@ The pediatric-vitals detectors moved into the pack `alpha.packs.pediatric_vitals
 A pack (`alpha.core.DomainPack`) declares its `NAME`, `VERSION` (MAJOR.MINOR.PATCH), `DOMAIN` and the Key names it can emit (`KEYS`),
 and its `parameters()` as data: each `Parameter` is named, typed (an exact `int` or `float`, finite, never a `bool`), bounded
 (`minimum <= value <= maximum`), described, and carries who approved it, the approval date and the justification. There are no defaults.
-`PackRegistry.register` validates totally, listing every violation in one `PackValidationError`, and refuses an invalid pack, a pack whose
+`PackRegistry.register` lists every violation it finds in one `PackValidationError` (a pack's relations between parameters are checked only once every parameter is individually valid, so a pack with a bad bound reports the bound first), and refuses an invalid pack, a pack whose
 name is already registered, and anything that is not a `DomainPack`. `PackRegistry.observe` holds a pack to what it declared: the result
-must be exactly a `zeta.KeySet` (a subclass is refused) and every Key must be one the pack declared. The parameters are read once, at
+must be exactly a `zeta.KeySet` (a subclass is refused), every Key must be one the pack declared and every declared Key must be there, `present` must be an exact `bool`, `confidence` an exact `int` or `float` (never a `bool`), `reason` a `str`, and the set's `min_confidence` must stay 0.0 (a floor is the consumer's choice; a pack that raised its own would hide its Keys from every lock). The parameters are read once, at
 registration, and that snapshot is what the registry keeps, together with its own copies of the parameters and the `NAME`, `VERSION` and
 `KEYS` it read and validated once. `PackRegistry.observe` returns a `KeySet` the registry built itself, from exact `Key` objects with exact `str` names read
 through the classes' own accessors, so nothing a pack attaches to its objects reaches the caller. `PackRegistry.identity(name)` is
@@ -82,8 +82,7 @@ through the classes' own accessors, so nothing a pack attaches to its objects re
 after registration, not against a pack that is wrong in a consistent way. A pack states relations its bounds cannot (for example a critical limit not
 below a high one) by overriding `parameter_problems`; the registry calls it on the validated copies and refuses the pack with the messages it returns,
 and both shipped packs state theirs. Every declared Key must be returned on every observation, present or not. It does not check that approval text is
-true, that a pack's relations are the right ones, or that a pack keeps its `KeySet.min_confidence` at its default (a pack can still hide a Key from a lock
-by raising it); it cannot stop a caller from rebinding a module's names. Both observation types (`VitalsObservation`, `ServiceObservation`) now refuse a `bool`,
+true, that a pack's relations are the right ones; it cannot stop a caller from rebinding a module's names. Both observation types (`VitalsObservation`, `ServiceObservation`) now refuse a `bool`,
 a subclass, a non-finite number or an integer too large for a float; `age_months` is `None` or a non-negative exact `int`.
 
 **The second pack.** `alpha.packs.service_health` takes a `ServiceObservation` (p95 latency in ms, error rate as a fraction, queue depth, and a tier of `interactive` or `batch`) and emits five Keys: `latency_high`, `latency_critical`, `error_burst`, `queue_backlog` and `degraded_service` (high latency together with an error burst). Its 8 thresholds are declared as bounded parameters and are what the detectors use: each pack builds its threshold table from its own declared parameters, and the tables are read-only. They are synthetic, tuned to no real service, and declared "unapproved" the same way. A suite (`tests/test_two_packs_one_contract.py`) holds both packs to the same contract: both register in one registry, are held to the Keys they declared, observe deterministically, record their identity in the existing `origin.transformation` field (which changes the bound content, so the identity is part of what is bound), and feed Zeta locks. `examples/service_degradation.py` runs a service timeline through a Zeta lock.
