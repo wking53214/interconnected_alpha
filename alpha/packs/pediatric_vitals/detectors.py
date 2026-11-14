@@ -74,7 +74,7 @@ def critical_o2(v: VitalsObservation) -> Key:
     )
 
 
-def warning_o2(v: VitalsObservation) -> Key:
+def warning_o2(v: VitalsObservation, norms=PEDIATRIC_NORMS) -> Key:
     # Source note (observe_consolidated.py:306-311): WARNING_O2 is an
     # `elif` under CRITICAL_O2. This is NOT a vacuous ordering: every
     # age-adjusted o2_low threshold (90/90/91/92/91) is above 88, so
@@ -82,7 +82,7 @@ def warning_o2(v: VitalsObservation) -> Key:
     # the critical case explicitly, warning_o2 would also fire whenever
     # critical_o2 does. Reproduced here as an explicit exclusion so the
     # two remain mutually exclusive exactly as in the source.
-    thresh = PEDIATRIC_NORMS[get_age_group(v.age_months)]["o2_low"]
+    thresh = norms[get_age_group(v.age_months)]["o2_low"]
     present = (not critical_o2(v).present) and v.oxygen_saturation < thresh
     return Key(
         name="warning_o2",
@@ -91,26 +91,26 @@ def warning_o2(v: VitalsObservation) -> Key:
     )
 
 
-def tachycardia(v: VitalsObservation) -> Key:
-    thresh = PEDIATRIC_NORMS[get_age_group(v.age_months)]["hr_high"]
+def tachycardia(v: VitalsObservation, norms=PEDIATRIC_NORMS) -> Key:
+    thresh = norms[get_age_group(v.age_months)]["hr_high"]
     present = v.heart_rate > thresh
     return Key(name="tachycardia", present=present, reason=f"HR {v.heart_rate} vs threshold {thresh}")
 
 
-def bradycardia(v: VitalsObservation) -> Key:
-    thresh = PEDIATRIC_NORMS[get_age_group(v.age_months)]["hr_low"]
+def bradycardia(v: VitalsObservation, norms=PEDIATRIC_NORMS) -> Key:
+    thresh = norms[get_age_group(v.age_months)]["hr_low"]
     present = v.heart_rate < thresh
     return Key(name="bradycardia", present=present, reason=f"HR {v.heart_rate} vs threshold {thresh}")
 
 
-def tachypnea(v: VitalsObservation) -> Key:
-    thresh = PEDIATRIC_NORMS[get_age_group(v.age_months)]["rr_high"]
+def tachypnea(v: VitalsObservation, norms=PEDIATRIC_NORMS) -> Key:
+    thresh = norms[get_age_group(v.age_months)]["rr_high"]
     present = v.respiratory_rate > thresh
     return Key(name="tachypnea", present=present, reason=f"RR {v.respiratory_rate} vs threshold {thresh}")
 
 
-def fever(v: VitalsObservation) -> Key:
-    thresh = PEDIATRIC_NORMS[get_age_group(v.age_months)]["temp_high"]
+def fever(v: VitalsObservation, norms=PEDIATRIC_NORMS) -> Key:
+    thresh = norms[get_age_group(v.age_months)]["temp_high"]
     present = v.temperature > thresh
     return Key(name="fever", present=present, reason=f"Temp {v.temperature} vs threshold {thresh}")
 
@@ -170,15 +170,18 @@ ALL_DETECTORS = (
 )
 
 
-def detect_all(v: VitalsObservation):
-    """Run every registered detector and return the resulting Keys.
+_USES_NORMS = (warning_o2, tachycardia, bradycardia, tachypnea, fever)
+
+
+def detect_all(v: VitalsObservation, norms=PEDIATRIC_NORMS):
+    """Run every registered detector and return the resulting Keys. ``norms`` is the threshold table the age-adjusted detectors read.
 
     Guards against a copy-paste detector bug silently dropping a Key:
     registry.observe() feeds this straight into zeta.KeySet, which
     de-dupes by name with no warning, so two detectors sharing a name
     by accident would silently lose one of them with no error anywhere.
     """
-    keys = [detector(v) for detector in ALL_DETECTORS]
+    keys = [detector(v, norms) if detector in _USES_NORMS else detector(v) for detector in ALL_DETECTORS]
     names = [k.name for k in keys]
     if len(names) != len(set(names)):
         dupes = sorted({n for n in names if names.count(n) > 1})

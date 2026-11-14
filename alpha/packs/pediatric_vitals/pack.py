@@ -16,7 +16,7 @@ from zeta import KeySet
 from ...core import DomainPack, Parameter
 from .detectors import ALL_DETECTORS
 from .registry import observe
-from .thresholds import PEDIATRIC_NORMS
+from .thresholds import PEDIATRIC_NORMS, norms_from
 from .vitals import VitalsObservation
 
 _DECLARED_ON = "2026-11-13"
@@ -65,8 +65,18 @@ class PediatricVitalsPack(DomainPack):
                 ))
         return tuple(out)
 
+    def _norms(self):
+        """The threshold table, built once from this pack's parameters: the values the registry validated are the values used."""
+        if not hasattr(self, "_norms_cache"):
+            self._norms_cache = norms_from(self.parameters())
+        return self._norms_cache
+
     def observe(self, raw: VitalsObservation) -> KeySet:
-        return observe(raw)
+        if type(raw) is not VitalsObservation:
+            raise TypeError(f"PediatricVitalsPack.observe needs exactly a VitalsObservation, got {type(raw).__name__}")
+        # a fresh object: its own validation runs again, so an observation edited after construction is refused here
+        raw = VitalsObservation(raw.heart_rate, raw.oxygen_saturation, raw.respiratory_rate, raw.temperature, raw.age_months)
+        return observe(raw, self._norms())
 
 
 __all__ = ["PediatricVitalsPack", "ALL_DETECTORS"]

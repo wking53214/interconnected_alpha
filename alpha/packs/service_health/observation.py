@@ -15,8 +15,12 @@ TIERS = ("interactive", "batch")
 def _number(name: str, value: object) -> float:
     if type(value) not in (int, float):
         raise TypeError(f"ServiceObservation.{name} must be an exact int or float, got {type(value).__name__}")
-    if not math.isfinite(value):
-        raise ValueError(f"ServiceObservation.{name} must be finite, got {value!r}")
+    try:
+        finite = math.isfinite(value)
+    except OverflowError:  # an integer too large for a float
+        finite = False
+    if not finite:
+        raise ValueError(f"ServiceObservation.{name} must be finite, got a value that is not a finite number")
     return value
 
 
