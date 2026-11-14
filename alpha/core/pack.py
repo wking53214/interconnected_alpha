@@ -6,7 +6,9 @@ a value a pack never declared is a value nobody can trace. Validation is total (
 and runs on the load path, so ``PackRegistry.register`` never admits an invalid pack.
 
 The registry also holds a pack to what it declared when it observes: the result must be exactly a ``zeta.KeySet``, every Key in it
-must be one the pack declared in ``KEYS``, and every declared Key must be there (present or not).
+must be one the pack declared in ``KEYS``, and every declared Key must be there (present or not). Each Key's fields are checked for their exact types (``present`` a bool, ``confidence`` an int or float
+and never a bool, ``reason`` a str), and the ``KeySet`` must keep ``min_confidence`` at 0.0: a floor is the consumer's choice, and a pack that
+raised its own would hide its Keys from every lock.
 
 What this does not do: it does not judge, decide or authorise (alpha detects named Keys and never says PASS or BREACH), it does
 not authenticate that a pack is who it says it is, and it does not check that a parameter's approval is true. A pack's identity
@@ -192,7 +194,7 @@ def _problems_with(pack: Any, declared: Any, read_problems: List[str], identity:
             try:
                 out.extend(str(m) for m in pack.parameter_problems(declared))
             except Exception as exc:  # a relation check that cannot run is a problem with the pack, not a crash here
-                out.append(f"parameter_problems raised {type(exc).__name__}: {exc}")
+                out.append(f"{name}: parameter_problems raised {type(exc).__name__}: {exc}")
     return out
 
 
@@ -287,6 +289,13 @@ class PackRegistry:
         for key in KeySet.all_keys(returned):
             if type(key) is not Key or type(key.name) is not str:
                 raise PackError(f"pack {name!r} returned a Key that is not exactly a zeta Key with an exact str name")
+            if type(key.present) is not bool:
+                raise PackError(f"pack {name!r}: Key {key.name!r} has present={key.present!r}; present must be an exact bool")
+            if type(key.confidence) not in (int, float):
+                raise PackError(f"pack {name!r}: Key {key.name!r} has confidence of type {type(key.confidence).__name__}; "
+                                "confidence must be an exact int or float (a bool is refused)")
+            if type(key.reason) is not str:
+                raise PackError(f"pack {name!r}: Key {key.name!r} has a reason of type {type(key.reason).__name__}; reason must be an exact str")
             rebuilt.append(Key(name=key.name, present=key.present, confidence=key.confidence, reason=key.reason))
         undeclared = sorted({key.name for key in rebuilt} - set(entry.keys))
         if undeclared:
@@ -294,4 +303,8 @@ class PackRegistry:
         omitted = sorted(set(entry.keys) - {key.name for key in rebuilt})
         if omitted:
             raise PackError(f"pack {name!r} did not emit Keys it declared in KEYS: {omitted} (every declared Key is returned on every observation, present or not)")
-        return KeySet(rebuilt, min_confidence=returned.min_confidence)
+        floor = returned.min_confidence
+        if type(floor) is not float or floor != 0.0:
+            raise PackError(f"pack {name!r} returned a KeySet with min_confidence={floor!r}; a pack leaves it at 0.0, because a floor "
+                            "raised by the pack would hide its own Keys from every lock (the consumer sets the floor, not the pack)")
+        return KeySet(rebuilt, min_confidence=floor)
