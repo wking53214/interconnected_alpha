@@ -11,7 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 # The zeta commit the runtime dependency installs. Moving it is a reviewed change.
-EXPECTED_ZETA_PIN = "cc200d76f518e5a48e8d39c5d47fc9673285233e"
+EXPECTED_ZETA_PIN = "cd22c2d12ad3353ded7fc37ad15018394c1d0f25"
 
 
 def _runtime_dependencies() -> list:
