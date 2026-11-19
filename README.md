@@ -2,6 +2,16 @@
 
 Extracted **observation → named Keys** layer. Version `0.2.0`. Domain packs (`alpha.packs`) turn raw observations into named Keys; two packs ship: pediatric vitals (`alpha.packs.pediatric_vitals`) and service health (`alpha.packs.service_health`, synthetic, a proof that the contract is not tied to medicine), and `alpha.core` is the domain-blind contract both implement. Depends on [`interconnected_zeta`](https://github.com/wking53214/interconnected_zeta) (`zeta.Key` / `zeta.KeySet`).
 
+## Role Within ≡TACK
+
+- **What it is.** The observation stage of the small reference spine: it turns a raw observation into named Keys using a domain pack.
+- **Authority matrix.** Evaluation only (detects named conditions). It does not define policy, enforce, authorize, authenticate or store evidence.
+- **Owns.** The pack contract (`alpha.core`), two packs, and the CNS binding of a `KeySet`.
+- **Does not own.** Locks (zeta), decisions (beta), custody (delta), the orchestrator path (observe-perceive), or whether thresholds are clinically right (nobody approved the pediatric norms; see section 2).
+- **Depends on.** `zeta`, pinned by commit in `pyproject.toml`. CNS is optional.
+- **Depended on by.** `zeta`, `beta` and `delta` are described as the later stages. Whether each imports alpha: UNKNOWN (not inspected here). observe-perceive does not use it (stated in section 4, not re-checked).
+- **Fail behavior.** Closed on malformed input: `None`, non-finite, `bool` and subclass values are refused at construction, so a missing or non-numeric reading cannot become "not present". Open on out-of-range numbers: there is no range check, so an impossible but finite value is judged like any other number. EXECUTED 2026-11-17: an oxygen saturation of 185 (a slip for 85) was accepted and returned no Key present, and a heart rate of -40 returned `bradycardia`. A pack is trusted in-process code, and its identity and "approved by" text are claims nothing authenticates.
+
 ## 1. Pipeline Position & Role
 
 **OBSERVATION.** First stage of the extracted decision spine.
@@ -10,7 +20,9 @@ Extracted **observation → named Keys** layer. Version `0.2.0`. Domain packs (`
 α Alpha (this repo) → ζ Zeta (Locks) → β Beta (Decision) → δ Delta (custody)
 ```
 
-Live orchestrated path remains [`observe-perceive`](https://github.com/wking53214/observe-perceive). This repo extracts the named-condition detectors that were previously inline `if` branches inside OBSERVE's `RiskAdapters` score accumulator.
+The order above is the design order. CNS's script `chains/spine_run.py` runs all four repos in this order (EXECUTED 2026-11-17: exit 0 against the four mains). observe-perceive's orchestrator does not call them.
+
+The orchestrator path remains [`observe-perceive`](https://github.com/wking53214/observe-perceive). This repo extracts the named-condition detectors that were previously inline `if` branches inside OBSERVE's `RiskAdapters` score accumulator.
 
 ## 2. Full System Scope & Architectural Depth
 
@@ -27,7 +39,7 @@ This is **not** OBSERVE's full `VitalsSnapshot` (no `patient_id`, no timestamp, 
 | Group | Source | Threshold style | Names |
 |---|---|---|---|
 | Single-vital | `RiskAdapters.heuristic` (`observe_consolidated.py:292-340`) | **Age-adjusted** via `PEDIATRIC_NORMS` + `get_age_group` | `critical_o2`, `warning_o2`, `tachycardia`, `bradycardia`, `tachypnea`, `fever`, `hypothermia` |
-| Named syndrome | `RiskAdapters.behavioral_vaccine` (`observe_consolidated.py:517-534`) | **Fixed absolute thresholds — not age-adjusted** | `septic_shock`, `respiratory_distress`, `hypovolemic_shock` |
+| Named syndrome | `RiskAdapters.behavioral_vaccine` (`observe_consolidated.py:517-534`) | **Fixed absolute thresholds, not age-adjusted** | `septic_shock`, `respiratory_distress`, `hypovolemic_shock` |
 
 The age-adjustment asymmetry is reproduced on purpose. Harmonizing it would overstate fidelity.
 
@@ -78,8 +90,8 @@ through the classes' own accessors, so nothing a pack attaches to its objects re
 `pack:<name>/<version>` from the values read at registration, for a producer to record with what it observed (for example in the origin's
 `transformation` field); `pack_identity(pack)` reads the pack as it is now.
 
-**What the contract does and does not do.** A pack is trusted, in-process code: the registry guards what it validated against a pack that changes
-after registration, not against a pack that is wrong in a consistent way. A pack states relations its bounds cannot (for example a critical limit not
+**What the contract does and does not do.** A pack is trusted, in-process code: the registry guards what it validated (the identity, the Key names and its own copies of the parameters) against a pack that changes
+after registration, not against a pack that is wrong in a consistent way. That guard does not reach the thresholds the detectors use. The registry's kept copies are a record; each shipped pack builds its threshold table from its own later call to `parameters()`. EXECUTED 2026-11-17: a pack whose `parameters()` gave valid values at registration and out-of-bounds values afterwards registered cleanly and then observed with the out-of-bounds values. The module-level `observe` functions (the one the example in section 6 calls) use the default tables and pass through no registry at all. A pack states relations its bounds cannot (for example a critical limit not
 below a high one) by overriding `parameter_problems`; the registry calls it on the validated copies and refuses the pack with the messages it returns,
 and both shipped packs state theirs. Every declared Key must be returned on every observation, present or not. It does not check that approval text is
 true, that a pack's relations are the right ones; it cannot stop a caller from rebinding a module's names. Both observation types (`VitalsObservation`, `ServiceObservation`) now refuse a `bool`,
@@ -99,26 +111,26 @@ contract in sentinel_os (kernel contract, declared bounded parameters, fail-loud
 ## 3. What It Does NOT Do / Non-Goals
 
 - Does **not** fuse scores, select engines, or emit a regime. That is OBSERVE.
-- Does **not** extract `BASE_RISK` or `BENIGN_PATTERN` suppressions (`fever_response`, `crying_baby`) — those modulate an accumulated score, they are not Keys.
+- Does **not** extract `BASE_RISK` or `BENIGN_PATTERN` suppressions (`fever_response`, `crying_baby`), those modulate an accumulated score, they are not Keys.
 - Does **not** reproduce per-syndrome severity weights or data-completeness / alert-context confidence.
 - Does **not** evaluate Locks, policy, or authorization.
 - Does **not** persist, ledger, or identify a patient.
-- Does **not** generalize beyond pediatric vitals. There is no plugin detector API.
+- Does **not** load detectors dynamically. Two packs ship (pediatric vitals and a synthetic service-health pack); the pack contract in `alpha.core` lets a caller register another in code, but no plugin discovery exists.
 - Does **not** call PERCEIVE, Conservation Kernel, or sentinel_os.
 
 ## 4. Brutally Honest Current Status & Gaps
 
 | Gap | Detail |
 |---|---|
-| Domain | Pediatric vitals demo. Not a general observation runtime. Driving/ascent/IVR detectors were **not** extracted. |
+| Domain | One clinical pack (pediatric vitals) and one synthetic pack (service health). Not a general observation runtime. Driving/ascent/IVR detectors were **not** extracted. |
 | Confidence | Always `1.0`. Callers who need probabilistic detection must do it elsewhere. |
 | Age-group holes | `get_age_group(None)` and ages outside the table follow source behavior; do not assume clinical completeness. |
 | Uncalibrated norms | `PEDIATRIC_NORMS` copied from OBSERVE. Not independently clinically validated. Commercial red team: OBSERVE pediatric path is **not commercially relevant as-is** (missed detections filed as test skips). |
 | Dependency | `zeta` is pinned by commit in `pyproject.toml` (`tests/test_zeta_pin.py` holds the pin), so moving it is a reviewed change. It is a git dependency, not on a package index. |
-| Live-path wiring | observe-perceive still runs `observe_consolidated.py` RiskAdapters inline. α is **not imported** by the orchestrator. Dual implementation: extract vs source of extraction. |
+| Orchestrator-path wiring | observe-perceive still runs `observe_consolidated.py` RiskAdapters inline. α is **not imported** by the orchestrator. Dual implementation: extract vs source of extraction. |
 | Threading / IO | Pure functions. No store. |
 
-62 tests. `pip install -e ".[dev]" && pytest`. Library, not a service.
+`pip install -e ".[dev]" && pytest`. Library, not a service. EXECUTED 2026-11-17 at `5ed5ca9`, Python 3.13, in a fresh environment that held only this repo and its pins: that command gives 278 passed, 3 skipped (the three need CNS). With the `cns` extra installed and `ALPHA_REQUIRE_CNS=1`, which is how CI's second job runs, 382 passed and none skipped. Both examples ran to the end. Not run: GitHub CI, Python 3.10 to 3.12. The earlier "62 tests" figure here was out of date.
 
 ## 5. Core Invariants & Guarantees
 
@@ -156,6 +168,8 @@ raw vitals
                                  → δ.DecisionLedger.append
 ```
 
+Who runs this order: CNS's script `chains/spine_run.py`, not observe-perceive's orchestrator (see section 1 for the evidence).
+
 Example: `examples/pediatric_discharge.py` (full α→ζ timeline).  
 Source of extraction: [`OBSERVE`](https://github.com/wking53214/OBSERVE) / `observe_consolidated.py` in observe-perceive.  
 Hub: observe-perceive **does not yet substitute α for RiskAdapters**.
@@ -170,7 +184,7 @@ It makes the `zeta.KeySet` that `observe` returns **bindable** to a verdict in C
 |---|---|---|
 | `observe(...)` -> `KeySet` | `min_confidence`, and for every key (listed by name, so insertion order cannot matter): `name`, `present`, `confidence`, `reason` | `alpha.keyset` |
 
-`keyset_digest(keys)` and `binds(verdict, keys)` are the whole surface; `keyset_content(keys)` returns the plain content (no CNS needed). `binds` is true only for a verdict issued against exactly those keys, and false for an unbound or hand-built one. The `reason` text is bound because it carries the readings and thresholds each detector compared, so the same keys firing on a different reading is a different record. alpha identifies no patient (see non-goals), so by default identical keys for two patients bind alike.
+`keyset_digest(keys)` and `binds(verdict, keys)` are the whole surface; `keyset_content(keys)` returns the plain content (no CNS needed). `binds` is true only for a verdict that names exactly those keys (the subject and their digest), and false for an unbound one or one that names other keys. It compares what a verdict names and does not check who made it: a `GateResult` typed by hand with the right subject and digest binds too (EXECUTED 2026-11-17), so `binds` alone is not evidence that any gate judged the keys. The `reason` text is bound because it carries the readings and thresholds each detector compared, so the same keys firing on a different reading is a different record. alpha identifies no patient (see non-goals), so by default identical keys for two patients bind alike.
 
 **Binding keys to a run.** Pass `context=` to `keyset_content`, `keyset_digest` or `binds`: a mapping with exactly `schema` (`"spine-context/1"`), `entity_id`, `event_id` and `run_id`, all non-empty strings. The content then gains `context` and `present_names`, the sorted names zeta's own `KeySet` rule treats as present (present, and at or above `min_confidence`), so a reader does not re-derive that rule. A malformed context or unknown schema raises. Without a context the content, and every existing digest, is unchanged. alpha still identifies nobody on its own: the caller supplies the context, and CNS's strict trace is what refuses a run whose stages disagree. The content also carries `keyset_fingerprint`, zeta's own SHA-256 of exactly what the KeySet holds (every Key's name, presence, confidence and reason, and `min_confidence`). A zeta `LockResult` records the same value for the KeySet it was evaluated from, which is how CNS checks that a result was evaluated from the KeySet alpha produced, instead of trusting a digest the binder names. Two sets of readings that list the same present Keys have different fingerprints. A KeySet from a zeta that cannot fingerprint is refused under a context. It is a fact about the object, not a signature: alpha still cannot show that the readings themselves are authentic.
 
