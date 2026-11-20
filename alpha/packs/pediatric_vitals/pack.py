@@ -70,6 +70,10 @@ class PediatricVitalsPack(DomainPack):
         return [f"{group}_hr_low ({by_name[f'{group}_hr_low']}) is not below {group}_hr_high ({by_name[f'{group}_hr_high']})"
                 for group in AGE_GROUPS if not by_name[f"{group}_hr_low"] < by_name[f"{group}_hr_high"]]
 
+    def adopt_parameters(self, parameters):
+        """Registration hands over the copies it validated; the threshold table is built from them, not from a later call to parameters()."""
+        self._norms_cache = norms_from(parameters)
+
     def _norms(self):
         """The threshold table, built once from this pack's parameters: the values the registry validated are the values used."""
         if not hasattr(self, "_norms_cache"):

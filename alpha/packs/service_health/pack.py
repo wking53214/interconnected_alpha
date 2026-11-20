@@ -25,6 +25,10 @@ class ServiceHealthPack(DomainPack):
                 f"({by_name[f'{tier}_latency_high']}); critical latency is also high latency"
                 for tier in TIER_NAMES if by_name[f"{tier}_latency_critical"] < by_name[f"{tier}_latency_high"]]
 
+    def adopt_parameters(self, parameters):
+        """Registration hands over the copies it validated; the threshold table is built from them, not from a later call to parameters()."""
+        self._norms_cache = norms_from(parameters)
+
     def _norms(self):
         """The threshold table, built once from this pack's parameters: the values the registry validated are the values used."""
         if not hasattr(self, "_norms_cache"):

@@ -37,7 +37,7 @@ def test_the_root_exports_no_domain_type():
 
 
 def test_a_pack_author_sees_exactly_these_methods():
-    assert public(DomainPack) == ["identity", "observe", "parameter_problems", "parameters"]
+    assert public(DomainPack) == ["adopt_parameters", "identity", "observe", "parameter_problems", "parameters"]
     assert DomainPack.__abstractmethods__ == frozenset({"observe", "parameters"})
     assert arguments(DomainPack.observe) == ["self", "raw"]
     assert arguments(DomainPack.parameters) == ["self"]
