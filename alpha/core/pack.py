@@ -86,6 +86,14 @@ class DomainPack(ABC):
         """
         return []
 
+    def adopt_parameters(self, parameters: Tuple[Parameter, ...]) -> None:
+        """Take the registry's validated copies as the values the detectors use.
+
+        The registry calls this once, at registration, with the copies it validated and keeps. A pack whose detectors read thresholds
+        builds its table from these, not from a later call to ``parameters()``, so the values checked are the values used. The default
+        does nothing, for a pack that holds no threshold table.
+        """
+
     def identity(self) -> str:
         return pack_identity(self)
 
@@ -250,6 +258,10 @@ class PackRegistry:
         with self._lock:
             if entry.name in self._entries:
                 raise PackError(f"a pack named {entry.name!r} is already registered (version {self._entries[entry.name].version})")
+            try:
+                pack.adopt_parameters(declared)  # the pack's thresholds now come from the copies validated above
+            except Exception as exc:  # a pack that cannot take its validated values does not load
+                raise PackValidationError([f"{entry.name}: adopt_parameters raised {type(exc).__name__}: {exc}"]) from exc
             self._entries[entry.name] = entry
 
     def _entry(self, name: str) -> _Entry:
