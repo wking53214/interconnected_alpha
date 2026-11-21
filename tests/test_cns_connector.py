@@ -84,7 +84,11 @@ def test_the_order_keys_were_added_in_cannot_change_the_digest():
 def test_a_confidence_given_as_an_int_is_the_same_record_as_the_float():
     assert keyset_digest(KeySet([Key("a", True, 1)])) == keyset_digest(KeySet([Key("a", True, 1.0)]))
     assert keyset_digest(KeySet([Key("a", True)], min_confidence=0)) == keyset_digest(KeySet([Key("a", True)], min_confidence=0.0))
-    assert keyset_digest(KeySet([Key("a", 1)])) == keyset_digest(KeySet([Key("a", True)]))
+    # Zeta now refuses present=1 when the Key is built, so force it in afterwards: alpha's own
+    # normalisation of `present` to bool is what this line covers.
+    loose = Key("a", True)
+    object.__setattr__(loose, "present", 1)
+    assert keyset_digest(KeySet([loose])) == keyset_digest(KeySet([Key("a", True)]))
 
 
 def test_a_key_added_twice_is_one_key_as_the_keyset_defines_it():
