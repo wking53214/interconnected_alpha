@@ -43,7 +43,15 @@ def test_the_honest_pack_passes():
 
 @pytest.mark.parametrize("present", ["yes", 1, 0, None, "False"])
 def test_a_present_that_is_not_an_exact_bool_is_refused(present):
-    registry = registered(observe=lambda self, raw: KeySet([Key("k_high", present=present, reason="x")]))
+    # Zeta now refuses a non-bool `present` when the Key is built (item 22), so a pack cannot make one the
+    # normal way. This test keeps alpha's own check covered: it forces the bad value in after construction,
+    # as a pack that got around zeta's check would.
+    def bad_key():
+        key = Key("k_high", present=True, reason="x")
+        object.__setattr__(key, "present", present)
+        return key
+
+    registry = registered(observe=lambda self, raw: KeySet([bad_key()]))
     with pytest.raises(PackError, match="present"):
         registry.observe("one_key", 1.0)
 
