@@ -117,6 +117,7 @@ contract in sentinel_os (kernel contract, declared bounded parameters, fail-loud
 - Does **not** persist, ledger, or identify a patient.
 - Does **not** load detectors dynamically. Two packs ship (pediatric vitals and a synthetic service-health pack); the pack contract in `alpha.core` lets a caller register another in code, but no plugin discovery exists.
 - Does **not** call PERCEIVE, Conservation Kernel, or sentinel_os.
+- Does **not** sign anything, hold a key, or check a signature. Signed lock results are zeta's and beta's (see "How alpha's output feeds signed lock results").
 
 ## 4. Brutally Honest Current Status & Gaps
 
@@ -129,6 +130,8 @@ contract in sentinel_os (kernel contract, declared bounded parameters, fail-loud
 | Dependency | `zeta` is pinned by commit in `pyproject.toml` (`tests/test_zeta_pin.py` holds the pin), so moving it is a reviewed change. It is a git dependency, not on a package index. |
 | Orchestrator-path wiring | observe-perceive still runs `observe_consolidated.py` RiskAdapters inline. α is **not imported** by the orchestrator. Dual implementation: extract vs source of extraction. |
 | Threading / IO | Pure functions. No store. |
+| Readings are not authenticated, even when downstream is signed | A signature on a zeta lock result proves who held the signer, not that the readings alpha was given were real. alpha cannot show the readings are authentic (see "How alpha's output feeds signed lock results"). |
+| zeta pin is older than signed lock results | alpha pins zeta at `fdb3865`, which predates zeta's signing slot (zeta `0ab30b2`). alpha uses only `Key` and `KeySet`, which signing does not change, so this pin was left alone. Moving it is a separate reviewed change. |
 
 `pip install -e ".[dev]" && pytest`. Library, not a service. EXECUTED 2026-11-19, Python 3.13, in a fresh environment that held only this repo and its pins: that command gives 281 passed, 3 skipped (the three need CNS). With the `cns` extra installed, 385 passed and none skipped (run without `ALPHA_REQUIRE_CNS=1`; CI's second job sets it). Both examples ran to the end. Not run: GitHub CI, Python 3.10 to 3.12. The earlier "62 tests" figure here was out of date.
 
@@ -163,9 +166,9 @@ keys.get("fever")               # zeta.Key | None
 ```text
 raw vitals
     → α.observe → zeta.KeySet
-                       → ζ.LockEvaluator.evaluate(_all)
-                            → β.DecisionEngine.decide
-                                 → δ.DecisionLedger.append
+                       → ζ.LockEvaluator.evaluate(_all)   (lock results signed if a signer is plugged in)
+                            → β.DecisionEngine.decide   (refuses unsigned or badly signed lock results if a checker is plugged in)
+                                 → δ.DecisionLedger.append   (signed checkpoints can be published to an outside anchor)
 ```
 
 Who runs this order: CNS's script `chains/spine_run.py`, not observe-perceive's orchestrator (see section 1 for the evidence).
@@ -173,6 +176,24 @@ Who runs this order: CNS's script `chains/spine_run.py`, not observe-perceive's 
 Example: `examples/pediatric_discharge.py` (full α→ζ timeline).  
 Source of extraction: [`OBSERVE`](https://github.com/wking53214/OBSERVE) / `observe_consolidated.py` in observe-perceive.  
 Hub: observe-perceive **does not yet substitute α for RiskAdapters**.
+
+## How alpha's output feeds signed lock results
+
+alpha is the first link in a chain that can now be signed and checked end to end. alpha itself signs and checks nothing.
+
+1. **alpha** turns a raw observation into a `zeta.KeySet` (`observe`). Each `Key` carries its name, presence, confidence and a `reason` that records the readings and thresholds compared.
+2. **zeta** evaluates its locks from that `KeySet`. `KeySet.fingerprint()` is a SHA-256 of exactly what the set holds (`min_confidence` and every Key's name, presence, confidence and reason). Every `LockResult` records it as `keyset_fingerprint`, together with the `entity_id`. If the operator plugs in a signer (`LockEvaluator(registry, signer=...)`), zeta signs every result over those fields, so the signature covers which KeySet the lock state was judged from.
+3. **beta**, when the operator plugs in a checker (`DecisionEngine(..., lock_result_signer=..., lock_result_verifier=...)`), refuses any lock result whose signature is missing or does not check out, and makes no Decision.
+4. **delta** records the Decision in its hash-chained ledger and can publish signed checkpoints to an outside anchor.
+
+What this means for alpha's output:
+
+- **A different reading is a different signature.** Because the `reason` text is part of the `KeySet` fingerprint, the same Keys firing on a different reading gives a different `keyset_fingerprint`, so a signed lock result cannot be reused for other readings.
+- **alpha's output is the one input nobody signs.** The signature starts at zeta. A signed lock result proves the holder of the signer evaluated that exact `KeySet`. It does not prove the readings given to `observe` were real, that the sensor or the person entering them was honest, or that the pack's thresholds are clinically right. alpha cannot show any of these.
+- **A KeySet that cannot fingerprint is refused under a context** (see the CNS section).
+- **Nothing here is protected unless the operator plugs both in.** With no signer in zeta and no checker in beta, results are unsigned and anyone can build one. Even with both, the signer runs in the same process as the evaluator, so code there that can call it can sign a lock result no evaluation produced. A separate signer process is the next step.
+
+This repo's own tests and API are unchanged by this: its only dependency is still zeta, at the older pin noted in section 4.
 
 ## Optional CNS connection
 
