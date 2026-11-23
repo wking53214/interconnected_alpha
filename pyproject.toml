@@ -5,7 +5,7 @@ description = "Domain packs that detect named Keys in raw observations, ready to
 requires-python = ">=3.10"
 license = { text = "Apache-2.0" }
 dependencies = [
-    "zeta @ git+https://github.com/wking53214/interconnected_zeta@fdb3865d802313703c8b883840d539067b13a316",
+    "zeta @ git+https://github.com/wking53214/interconnected_zeta@0ab30b284f4bf73eb94b9425bafd95f1f7829f50",
 ]
 
 [project.optional-dependencies]
