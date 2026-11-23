@@ -131,7 +131,6 @@ contract in sentinel_os (kernel contract, declared bounded parameters, fail-loud
 | Orchestrator-path wiring | observe-perceive still runs `observe_consolidated.py` RiskAdapters inline. α is **not imported** by the orchestrator. Dual implementation: extract vs source of extraction. |
 | Threading / IO | Pure functions. No store. |
 | Readings are not authenticated, even when downstream is signed | A signature on a zeta lock result proves who held the signer, not that the readings alpha was given were real. alpha cannot show the readings are authentic (see "How alpha's output feeds signed lock results"). |
-| zeta pin is older than signed lock results | alpha pins zeta at `fdb3865`, which predates zeta's signing slot (zeta `0ab30b2`). alpha uses only `Key` and `KeySet`, which signing does not change, so this pin was left alone. Moving it is a separate reviewed change. |
 
 `pip install -e ".[dev]" && pytest`. Library, not a service. EXECUTED 2026-11-19, Python 3.13, in a fresh environment that held only this repo and its pins: that command gives 281 passed, 3 skipped (the three need CNS). With the `cns` extra installed, 385 passed and none skipped (run without `ALPHA_REQUIRE_CNS=1`; CI's second job sets it). Both examples ran to the end. Not run: GitHub CI, Python 3.10 to 3.12. The earlier "62 tests" figure here was out of date.
 
