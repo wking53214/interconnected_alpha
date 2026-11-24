@@ -1,10 +1,21 @@
 """Age-adjusted pediatric vital-sign thresholds.
 
-Extracted verbatim from observe_consolidated.py:113-119 (PEDIATRIC_NORMS)
-and observe_consolidated.py:247-257 (get_age_group). These are the exact
-source values, not re-derived or approximated. These values are copied from
-the source and are not independently clinically validated; see README
-section 4 before relying on them.
+Heart rate, respiratory rate and newborn fever limits were re-derived on
+2026-11-23 from published references and are PROVISIONAL PROXIES, NOT
+CLINICALLY VALIDATED (not independently clinically validated). Before that the table was a verbatim copy of OBSERVE's
+PEDIATRIC_NORMS (observe_consolidated.py:113-119), whose low heart-rate limit
+rose with age (80, 90, 95, 100), the wrong way round. The oxygen limits and the
+other fever limits were reviewed and left as they were. get_age_group is still
+the verbatim copy (observe_consolidated.py:247-257). See README section 4.
+
+Sources: Fleming et al., Lancet 2011;377:1011 (web appendix, tables 4-5:
+centiles of heart and respiratory rate in healthy children); Goldstein et al.,
+Pediatr Crit Care Med 2005;6:2 (consensus); AAP, Pediatrics 2021;148:e2021052228
+(fever is 38.0 C or above under 2 months; the detectors use ">" so the limit is
+37.9). Method: a limit is placed so a healthy child anywhere in the age group is
+flagged by rate alone about 1% of the time or less. That costs sensitivity at the
+young end of wide groups; "child" spans 3 to 18 years, where the 1st centile of
+heart rate falls from 70 to 43, and needs splitting into finer age bands.
 """
 
 from types import MappingProxyType
@@ -14,11 +25,11 @@ AGE_GROUPS = ("neonatal", "infant", "toddler", "child", "generic")
 NORM_COLUMNS = ("hr_high", "hr_low", "rr_high", "o2_low", "temp_high")
 
 _RAW = {
-    "neonatal": {"hr_high": 160, "hr_low": 80, "rr_high": 50, "o2_low": 90, "temp_high": 38.5},
-    "infant":   {"hr_high": 150, "hr_low": 90, "rr_high": 45, "o2_low": 90, "temp_high": 39.0},
-    "toddler":  {"hr_high": 140, "hr_low": 95, "rr_high": 40, "o2_low": 91, "temp_high": 39.0},
-    "child":    {"hr_high": 130, "hr_low": 100, "rr_high": 35, "o2_low": 92, "temp_high": 39.5},
-    "generic":  {"hr_high": 140, "hr_low": 95, "rr_high": 40, "o2_low": 91, "temp_high": 39.0},
+    "neonatal": {"hr_high": 180, "hr_low": 90, "rr_high": 60, "o2_low": 90, "temp_high": 37.9},
+    "infant":   {"hr_high": 175, "hr_low": 90, "rr_high": 60, "o2_low": 90, "temp_high": 39.0},
+    "toddler":  {"hr_high": 150, "hr_low": 75, "rr_high": 45, "o2_low": 91, "temp_high": 39.0},
+    "child":    {"hr_high": 130, "hr_low": 50, "rr_high": 35, "o2_low": 92, "temp_high": 39.5},
+    "generic":  {"hr_high": 160, "hr_low": 50, "rr_high": 40, "o2_low": 91, "temp_high": 39.0},
 }
 
 # Read-only at both levels: a threshold the pack declared cannot be edited in place behind the registry. The detectors read the table

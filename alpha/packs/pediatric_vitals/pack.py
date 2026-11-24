@@ -4,7 +4,8 @@ What is declared: the age-group threshold table (``PEDIATRIC_NORMS``), as 25 bou
 detectors (``septic_shock``, ``respiratory_distress``, ``hypovolemic_shock``) and ``critical_o2`` and ``hypothermia`` use fixed
 absolute thresholds that live in ``detectors.py``; they are not declared as parameters yet (a later step), and the README says so.
 
-Approval, stated plainly: nobody has approved these values. They were copied verbatim from OBSERVE's ``observe_consolidated.py`` and are not
+Approval, stated plainly: nobody has approved these values. Heart rate, respiratory rate and newborn fever limits were re-derived on 2026-11-23
+from published references (see ``thresholds.py``); the rest were copied from OBSERVE's ``observe_consolidated.py``. None are
 independently clinically validated. The declaration says so in ``approved_by`` and ``justification`` instead of naming an approver, and
 ``approval_date`` holds the date of this declaration. Replacing that text with a real reviewer is the pack owner's decision.
 """
@@ -20,10 +21,10 @@ from .thresholds import AGE_GROUPS, PEDIATRIC_NORMS, norms_from
 from .vitals import VitalsObservation
 
 _DECLARED_ON = "2026-11-13"
-_APPROVED_BY = "unapproved: copied verbatim from OBSERVE observe_consolidated.py:113-119; no clinical reviewer has approved these values"
+_APPROVED_BY = "unapproved: provisional proxies re-derived 2026-11-23 from Fleming 2011, Goldstein 2005 and AAP 2021 (oxygen and other fever limits copied from OBSERVE observe_consolidated.py:113-119); no clinical reviewer has approved these values"
 _JUSTIFICATION = (
-    "Extracted verbatim from OBSERVE's PEDIATRIC_NORMS so that the moved detectors give exactly the outputs they gave before; "
-    "not independently clinically validated (see README section 4 before relying on them)."
+    "Heart rate, respiratory rate and newborn fever limits re-derived from published references because OBSERVE's low heart-rate limit rose with age; "
+    "oxygen and other fever limits unchanged from OBSERVE; not independently clinically validated (see README section 4 before relying on them)."
 )
 
 # name of the table column -> (what it limits, minimum, maximum), bounds wide enough for any real reading of that quantity

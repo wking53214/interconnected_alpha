@@ -78,12 +78,12 @@ def test_tachycardia_does_not_fire_at_threshold():
 
 
 def test_bradycardia_fires_below_age_adjusted_threshold():
-    v = normal_child(heart_rate=99)  # child hr_low=100
+    v = normal_child(heart_rate=49)  # child hr_low=50
     assert bradycardia(v).present is True
 
 
 def test_bradycardia_does_not_fire_at_threshold():
-    v = normal_child(heart_rate=100)
+    v = normal_child(heart_rate=50)
     assert bradycardia(v).present is False
 
 

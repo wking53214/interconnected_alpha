@@ -3,6 +3,10 @@
 The golden check is the point of the move: a digest of every detector output (names, presence, confidence, reasons and each
 set's min_confidence; zeta's key fingerprint is a function of the same fields) over a grid of 20,160 readings, captured from the code BEFORE it moved (tests/golden_pediatric_keys.json), must be
 reproduced exactly by the code after it moved.
+
+RE-CAPTURED 2026-11-23: the heart-rate, respiratory-rate and newborn-fever limits were re-derived (thresholds.py), so the golden file
+now holds the digest of the NEW limits. The move itself was proven against the old file (the last commit with the old limits is a54d1dc);
+from here this test pins the current behaviour, so a later change to any detector output has to be acknowledged by re-capturing it.
 """
 import importlib.util
 import json
