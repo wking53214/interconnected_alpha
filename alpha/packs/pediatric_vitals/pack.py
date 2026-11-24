@@ -1,6 +1,6 @@
 """The pediatric-vitals domain pack: today's detectors, declared under the ``alpha.core.DomainPack`` contract.
 
-What is declared: the age-group threshold table (``PEDIATRIC_NORMS``), as 25 bounded parameters. The three multi-vital syndrome
+What is declared: the age-group threshold table (``PEDIATRIC_NORMS``), as 35 bounded parameters. The three multi-vital syndrome
 detectors (``septic_shock``, ``respiratory_distress``, ``hypovolemic_shock``) and ``critical_o2`` and ``hypothermia`` use fixed
 absolute thresholds that live in ``detectors.py``; they are not declared as parameters yet (a later step), and the README says so.
 

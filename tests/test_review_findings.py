@@ -168,9 +168,9 @@ def test_a_key_that_is_not_exactly_a_key_is_refused():
 
 def test_the_threshold_tables_cannot_be_changed_in_place():
     with pytest.raises(TypeError):
-        PEDIATRIC_NORMS["child"]["hr_high"] = 10000
+        PEDIATRIC_NORMS["school"]["hr_high"] = 10000
     with pytest.raises(TypeError):
-        PEDIATRIC_NORMS["child"] = {}
+        PEDIATRIC_NORMS["school"] = {}
     with pytest.raises(TypeError):
         SERVICE_NORMS["interactive"]["error_high"] = 5.0
     with pytest.raises(TypeError):
@@ -200,7 +200,7 @@ def test_a_declared_pediatric_threshold_is_the_one_the_detector_uses():
         NAME = "looser_pediatric"
 
         def parameters(self):
-            return tuple(dataclasses.replace(p, value=200) if p.name == "child_hr_high" else p for p in super().parameters())
+            return tuple(dataclasses.replace(p, value=200) if p.name == "preschool_hr_high" else p for p in super().parameters())
 
     registry = PackRegistry()
     registry.register(Looser())
