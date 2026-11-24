@@ -1,6 +1,6 @@
 {
  "count": 20160,
- "sha256": "9d3e246380212ac5bd2a1b268b5ec4d3002f31f903577c53cb1b04c4e21891af",
+ "sha256": "739bc77e61479435277ec08fb2076364b763fe2c815ca28945cd10eb7b3cedc4",
  "sample": [
   [
    null,
@@ -11,8 +11,8 @@
    [
     [
      "bradycardia",
-     true,
-     "HR 50 vs threshold 95"
+     false,
+     "HR 50 vs threshold 50"
     ],
     [
      "critical_o2",
@@ -47,7 +47,7 @@
     [
      "tachycardia",
      false,
-     "HR 50 vs threshold 140"
+     "HR 50 vs threshold 160"
     ],
     [
      "tachypnea",
@@ -70,8 +70,8 @@
    [
     [
      "bradycardia",
-     true,
-     "HR 80 vs threshold 95"
+     false,
+     "HR 80 vs threshold 50"
     ],
     [
      "critical_o2",
@@ -106,7 +106,7 @@
     [
      "tachycardia",
      false,
-     "HR 80 vs threshold 140"
+     "HR 80 vs threshold 160"
     ],
     [
      "tachypnea",
@@ -130,7 +130,7 @@
     [
      "bradycardia",
      false,
-     "HR 100 vs threshold 95"
+     "HR 100 vs threshold 50"
     ],
     [
      "critical_o2",
@@ -165,7 +165,7 @@
     [
      "tachycardia",
      false,
-     "HR 100 vs threshold 140"
+     "HR 100 vs threshold 160"
     ],
     [
      "tachypnea",
@@ -189,7 +189,7 @@
     [
      "bradycardia",
      false,
-     "HR 141 vs threshold 95"
+     "HR 141 vs threshold 50"
     ],
     [
      "critical_o2",
@@ -223,8 +223,8 @@
     ],
     [
      "tachycardia",
-     true,
-     "HR 141 vs threshold 140"
+     false,
+     "HR 141 vs threshold 160"
     ],
     [
      "tachypnea",
@@ -248,7 +248,7 @@
     [
      "bradycardia",
      false,
-     "HR 200 vs threshold 95"
+     "HR 200 vs threshold 50"
     ],
     [
      "critical_o2",
@@ -283,7 +283,7 @@
     [
      "tachycardia",
      true,
-     "HR 200 vs threshold 140"
+     "HR 200 vs threshold 160"
     ],
     [
      "tachypnea",
@@ -306,8 +306,8 @@
    [
     [
      "bradycardia",
-     false,
-     "HR 80 vs threshold 80"
+     true,
+     "HR 80 vs threshold 90"
     ],
     [
      "critical_o2",
@@ -317,7 +317,7 @@
     [
      "fever",
      false,
-     "Temp 34.0 vs threshold 38.5"
+     "Temp 34.0 vs threshold 37.9"
     ],
     [
      "hypothermia",
@@ -342,12 +342,12 @@
     [
      "tachycardia",
      false,
-     "HR 80 vs threshold 160"
+     "HR 80 vs threshold 180"
     ],
     [
      "tachypnea",
      false,
-     "RR 10 vs threshold 50"
+     "RR 10 vs threshold 60"
     ],
     [
      "warning_o2",
@@ -366,7 +366,7 @@
     [
      "bradycardia",
      false,
-     "HR 95 vs threshold 80"
+     "HR 95 vs threshold 90"
     ],
     [
      "critical_o2",
@@ -376,7 +376,7 @@
     [
      "fever",
      false,
-     "Temp 34.0 vs threshold 38.5"
+     "Temp 34.0 vs threshold 37.9"
     ],
     [
      "hypothermia",
@@ -401,12 +401,12 @@
     [
      "tachycardia",
      false,
-     "HR 95 vs threshold 160"
+     "HR 95 vs threshold 180"
     ],
     [
      "tachypnea",
      false,
-     "RR 41 vs threshold 50"
+     "RR 41 vs threshold 60"
     ],
     [
      "warning_o2",
@@ -425,7 +425,7 @@
     [
      "bradycardia",
      false,
-     "HR 130 vs threshold 80"
+     "HR 130 vs threshold 90"
     ],
     [
      "critical_o2",
@@ -435,7 +435,7 @@
     [
      "fever",
      false,
-     "Temp 34.0 vs threshold 38.5"
+     "Temp 34.0 vs threshold 37.9"
     ],
     [
      "hypothermia",
@@ -460,12 +460,12 @@
     [
      "tachycardia",
      false,
-     "HR 130 vs threshold 160"
+     "HR 130 vs threshold 180"
     ],
     [
      "tachypnea",
-     true,
-     "RR 60 vs threshold 50"
+     false,
+     "RR 60 vs threshold 60"
     ],
     [
      "warning_o2",
@@ -484,7 +484,7 @@
     [
      "bradycardia",
      false,
-     "HR 151 vs threshold 80"
+     "HR 151 vs threshold 90"
     ],
     [
      "critical_o2",
@@ -494,7 +494,7 @@
     [
      "fever",
      false,
-     "Temp 34.0 vs threshold 38.5"
+     "Temp 34.0 vs threshold 37.9"
     ],
     [
      "hypothermia",
@@ -519,12 +519,12 @@
     [
      "tachycardia",
      false,
-     "HR 151 vs threshold 160"
+     "HR 151 vs threshold 180"
     ],
     [
      "tachypnea",
      false,
-     "RR 35 vs threshold 50"
+     "RR 35 vs threshold 60"
     ],
     [
      "warning_o2",
@@ -543,7 +543,7 @@
     [
      "bradycardia",
      true,
-     "HR 50 vs threshold 80"
+     "HR 50 vs threshold 90"
     ],
     [
      "critical_o2",
@@ -553,7 +553,7 @@
     [
      "fever",
      false,
-     "Temp 34.0 vs threshold 38.5"
+     "Temp 34.0 vs threshold 37.9"
     ],
     [
      "hypothermia",
@@ -578,12 +578,12 @@
     [
      "tachycardia",
      false,
-     "HR 50 vs threshold 160"
+     "HR 50 vs threshold 180"
     ],
     [
      "tachypnea",
      false,
-     "RR 46 vs threshold 50"
+     "RR 46 vs threshold 60"
     ],
     [
      "warning_o2",
@@ -602,7 +602,7 @@
     [
      "bradycardia",
      false,
-     "HR 95 vs threshold 80"
+     "HR 95 vs threshold 90"
     ],
     [
      "critical_o2",
@@ -612,7 +612,7 @@
     [
      "fever",
      false,
-     "Temp 34.0 vs threshold 38.5"
+     "Temp 34.0 vs threshold 37.9"
     ],
     [
      "hypothermia",
@@ -637,12 +637,12 @@
     [
      "tachycardia",
      false,
-     "HR 95 vs threshold 160"
+     "HR 95 vs threshold 180"
     ],
     [
      "tachypnea",
      false,
-     "RR 10 vs threshold 50"
+     "RR 10 vs threshold 60"
     ],
     [
      "warning_o2",
@@ -661,7 +661,7 @@
     [
      "bradycardia",
      false,
-     "HR 100 vs threshold 80"
+     "HR 100 vs threshold 90"
     ],
     [
      "critical_o2",
@@ -671,7 +671,7 @@
     [
      "fever",
      false,
-     "Temp 34.0 vs threshold 38.5"
+     "Temp 34.0 vs threshold 37.9"
     ],
     [
      "hypothermia",
@@ -696,12 +696,12 @@
     [
      "tachycardia",
      false,
-     "HR 100 vs threshold 160"
+     "HR 100 vs threshold 180"
     ],
     [
      "tachypnea",
      false,
-     "RR 41 vs threshold 50"
+     "RR 41 vs threshold 60"
     ],
     [
      "warning_o2",
@@ -720,7 +720,7 @@
     [
      "bradycardia",
      false,
-     "HR 141 vs threshold 80"
+     "HR 141 vs threshold 90"
     ],
     [
      "critical_o2",
@@ -730,7 +730,7 @@
     [
      "fever",
      false,
-     "Temp 34.0 vs threshold 38.5"
+     "Temp 34.0 vs threshold 37.9"
     ],
     [
      "hypothermia",
@@ -755,12 +755,12 @@
     [
      "tachycardia",
      false,
-     "HR 141 vs threshold 160"
+     "HR 141 vs threshold 180"
     ],
     [
      "tachypnea",
-     true,
-     "RR 60 vs threshold 50"
+     false,
+     "RR 60 vs threshold 60"
     ],
     [
      "warning_o2",
@@ -779,7 +779,7 @@
     [
      "bradycardia",
      false,
-     "HR 200 vs threshold 80"
+     "HR 200 vs threshold 90"
     ],
     [
      "critical_o2",
@@ -789,7 +789,7 @@
     [
      "fever",
      false,
-     "Temp 34.0 vs threshold 38.5"
+     "Temp 34.0 vs threshold 37.9"
     ],
     [
      "hypothermia",
@@ -814,12 +814,12 @@
     [
      "tachycardia",
      true,
-     "HR 200 vs threshold 160"
+     "HR 200 vs threshold 180"
     ],
     [
      "tachypnea",
      false,
-     "RR 35 vs threshold 50"
+     "RR 35 vs threshold 60"
     ],
     [
      "warning_o2",
@@ -873,12 +873,12 @@
     [
      "tachycardia",
      false,
-     "HR 80 vs threshold 150"
+     "HR 80 vs threshold 175"
     ],
     [
      "tachypnea",
-     true,
-     "RR 46 vs threshold 45"
+     false,
+     "RR 46 vs threshold 60"
     ],
     [
      "warning_o2",
@@ -932,12 +932,12 @@
     [
      "tachycardia",
      false,
-     "HR 100 vs threshold 150"
+     "HR 100 vs threshold 175"
     ],
     [
      "tachypnea",
      false,
-     "RR 10 vs threshold 45"
+     "RR 10 vs threshold 60"
     ],
     [
      "warning_o2",
@@ -991,12 +991,12 @@
     [
      "tachycardia",
      false,
-     "HR 130 vs threshold 150"
+     "HR 130 vs threshold 175"
     ],
     [
      "tachypnea",
      false,
-     "RR 41 vs threshold 45"
+     "RR 41 vs threshold 60"
     ],
     [
      "warning_o2",
@@ -1049,13 +1049,13 @@
     ],
     [
      "tachycardia",
-     true,
-     "HR 151 vs threshold 150"
+     false,
+     "HR 151 vs threshold 175"
     ],
     [
      "tachypnea",
-     true,
-     "RR 60 vs threshold 45"
+     false,
+     "RR 60 vs threshold 60"
     ],
     [
      "warning_o2",
@@ -1109,12 +1109,12 @@
     [
      "tachycardia",
      false,
-     "HR 50 vs threshold 150"
+     "HR 50 vs threshold 175"
     ],
     [
      "tachypnea",
      false,
-     "RR 35 vs threshold 45"
+     "RR 35 vs threshold 60"
     ],
     [
      "warning_o2",
@@ -1168,12 +1168,12 @@
     [
      "tachycardia",
      false,
-     "HR 95 vs threshold 150"
+     "HR 95 vs threshold 175"
     ],
     [
      "tachypnea",
-     true,
-     "RR 46 vs threshold 45"
+     false,
+     "RR 46 vs threshold 60"
     ],
     [
      "warning_o2",
@@ -1227,12 +1227,12 @@
     [
      "tachycardia",
      false,
-     "HR 130 vs threshold 150"
+     "HR 130 vs threshold 175"
     ],
     [
      "tachypnea",
      false,
-     "RR 10 vs threshold 45"
+     "RR 10 vs threshold 60"
     ],
     [
      "warning_o2",
@@ -1286,12 +1286,12 @@
     [
      "tachycardia",
      false,
-     "HR 141 vs threshold 150"
+     "HR 141 vs threshold 175"
     ],
     [
      "tachypnea",
      false,
-     "RR 41 vs threshold 45"
+     "RR 41 vs threshold 60"
     ],
     [
      "warning_o2",
@@ -1345,12 +1345,12 @@
     [
      "tachycardia",
      true,
-     "HR 200 vs threshold 150"
+     "HR 200 vs threshold 175"
     ],
     [
      "tachypnea",
-     true,
-     "RR 60 vs threshold 45"
+     false,
+     "RR 60 vs threshold 60"
     ],
     [
      "warning_o2",
@@ -1368,8 +1368,8 @@
    [
     [
      "bradycardia",
-     true,
-     "HR 80 vs threshold 95"
+     false,
+     "HR 80 vs threshold 75"
     ],
     [
      "critical_o2",
@@ -1404,12 +1404,12 @@
     [
      "tachycardia",
      false,
-     "HR 80 vs threshold 140"
+     "HR 80 vs threshold 150"
     ],
     [
      "tachypnea",
      false,
-     "RR 35 vs threshold 40"
+     "RR 35 vs threshold 45"
     ],
     [
      "warning_o2",
@@ -1428,7 +1428,7 @@
     [
      "bradycardia",
      false,
-     "HR 100 vs threshold 95"
+     "HR 100 vs threshold 75"
     ],
     [
      "critical_o2",
@@ -1463,12 +1463,12 @@
     [
      "tachycardia",
      false,
-     "HR 100 vs threshold 140"
+     "HR 100 vs threshold 150"
     ],
     [
      "tachypnea",
      true,
-     "RR 46 vs threshold 40"
+     "RR 46 vs threshold 45"
     ],
     [
      "warning_o2",
@@ -1487,7 +1487,7 @@
     [
      "bradycardia",
      false,
-     "HR 141 vs threshold 95"
+     "HR 141 vs threshold 75"
     ],
     [
      "critical_o2",
@@ -1521,13 +1521,13 @@
     ],
     [
      "tachycardia",
-     true,
-     "HR 141 vs threshold 140"
+     false,
+     "HR 141 vs threshold 150"
     ],
     [
      "tachypnea",
      false,
-     "RR 10 vs threshold 40"
+     "RR 10 vs threshold 45"
     ],
     [
      "warning_o2",
@@ -1546,7 +1546,7 @@
     [
      "bradycardia",
      false,
-     "HR 151 vs threshold 95"
+     "HR 151 vs threshold 75"
     ],
     [
      "critical_o2",
@@ -1581,12 +1581,12 @@
     [
      "tachycardia",
      true,
-     "HR 151 vs threshold 140"
+     "HR 151 vs threshold 150"
     ],
     [
      "tachypnea",
-     true,
-     "RR 41 vs threshold 40"
+     false,
+     "RR 41 vs threshold 45"
     ],
     [
      "warning_o2",
@@ -1605,7 +1605,7 @@
     [
      "bradycardia",
      true,
-     "HR 50 vs threshold 95"
+     "HR 50 vs threshold 75"
     ],
     [
      "critical_o2",
@@ -1640,12 +1640,12 @@
     [
      "tachycardia",
      false,
-     "HR 50 vs threshold 140"
+     "HR 50 vs threshold 150"
     ],
     [
      "tachypnea",
      true,
-     "RR 60 vs threshold 40"
+     "RR 60 vs threshold 45"
     ],
     [
      "warning_o2",
@@ -1664,7 +1664,7 @@
     [
      "bradycardia",
      false,
-     "HR 95 vs threshold 95"
+     "HR 95 vs threshold 75"
     ],
     [
      "critical_o2",
@@ -1699,12 +1699,12 @@
     [
      "tachycardia",
      false,
-     "HR 95 vs threshold 140"
+     "HR 95 vs threshold 150"
     ],
     [
      "tachypnea",
      false,
-     "RR 35 vs threshold 40"
+     "RR 35 vs threshold 45"
     ],
     [
      "warning_o2",
@@ -1723,7 +1723,7 @@
     [
      "bradycardia",
      false,
-     "HR 130 vs threshold 95"
+     "HR 130 vs threshold 75"
     ],
     [
      "critical_o2",
@@ -1758,12 +1758,12 @@
     [
      "tachycardia",
      false,
-     "HR 130 vs threshold 140"
+     "HR 130 vs threshold 150"
     ],
     [
      "tachypnea",
      true,
-     "RR 46 vs threshold 40"
+     "RR 46 vs threshold 45"
     ],
     [
      "warning_o2",
@@ -1782,7 +1782,7 @@
     [
      "bradycardia",
      false,
-     "HR 151 vs threshold 95"
+     "HR 151 vs threshold 75"
     ],
     [
      "critical_o2",
@@ -1817,12 +1817,12 @@
     [
      "tachycardia",
      true,
-     "HR 151 vs threshold 140"
+     "HR 151 vs threshold 150"
     ],
     [
      "tachypnea",
      false,
-     "RR 10 vs threshold 40"
+     "RR 10 vs threshold 45"
     ],
     [
      "warning_o2",
@@ -1841,7 +1841,7 @@
     [
      "bradycardia",
      false,
-     "HR 200 vs threshold 95"
+     "HR 200 vs threshold 75"
     ],
     [
      "critical_o2",
@@ -1876,12 +1876,12 @@
     [
      "tachycardia",
      true,
-     "HR 200 vs threshold 140"
+     "HR 200 vs threshold 150"
     ],
     [
      "tachypnea",
-     true,
-     "RR 41 vs threshold 40"
+     false,
+     "RR 41 vs threshold 45"
     ],
     [
      "warning_o2",
@@ -1899,8 +1899,8 @@
    [
     [
      "bradycardia",
-     true,
-     "HR 80 vs threshold 100"
+     false,
+     "HR 80 vs threshold 50"
     ],
     [
      "critical_o2",
@@ -1959,7 +1959,7 @@
     [
      "bradycardia",
      false,
-     "HR 100 vs threshold 100"
+     "HR 100 vs threshold 50"
     ],
     [
      "critical_o2",
@@ -2018,7 +2018,7 @@
     [
      "bradycardia",
      false,
-     "HR 141 vs threshold 100"
+     "HR 141 vs threshold 50"
     ],
     [
      "critical_o2",
@@ -2077,7 +2077,7 @@
     [
      "bradycardia",
      false,
-     "HR 200 vs threshold 100"
+     "HR 200 vs threshold 50"
     ],
     [
      "critical_o2",
@@ -2135,8 +2135,8 @@
    [
     [
      "bradycardia",
-     true,
-     "HR 50 vs threshold 100"
+     false,
+     "HR 50 vs threshold 50"
     ],
     [
      "critical_o2",
@@ -2194,8 +2194,8 @@
    [
     [
      "bradycardia",
-     true,
-     "HR 95 vs threshold 100"
+     false,
+     "HR 95 vs threshold 50"
     ],
     [
      "critical_o2",
@@ -2254,7 +2254,7 @@
     [
      "bradycardia",
      false,
-     "HR 130 vs threshold 100"
+     "HR 130 vs threshold 50"
     ],
     [
      "critical_o2",
@@ -2313,7 +2313,7 @@
     [
      "bradycardia",
      false,
-     "HR 151 vs threshold 100"
+     "HR 151 vs threshold 50"
     ],
     [
      "critical_o2",

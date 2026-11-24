@@ -75,7 +75,7 @@ examples/service_degradation.py   the same wiring in another industry
 `alpha.core` holds a domain-blind contract and a registry; it names no domain, and neither does anything else in `alpha` outside `alpha/packs/` (a test checks that).
 The pediatric-vitals detectors moved into the pack `alpha.packs.pediatric_vitals` with no change to what they say: a digest of every detector output
 (names, presence, confidence, reasons and each set's `min_confidence`; zeta's key fingerprint is a function of exactly those fields) over a grid of 20,160 readings, captured from the code before the move
-(`tests/golden_pediatric_keys.json`), is reproduced exactly. The old top-level names (`alpha.VitalsObservation`, `alpha.observe`, `alpha.PEDIATRIC_NORMS`,
+(`tests/golden_pediatric_keys.json`), was reproduced exactly (at commit a54d1dc; the file was re-captured on 2026-11-23 when the heart rate, respiratory rate and newborn fever limits were re-derived, and now pins the new limits). The old top-level names (`alpha.VitalsObservation`, `alpha.observe`, `alpha.PEDIATRIC_NORMS`,
 `alpha.detect_all` and the rest) and module paths (`alpha.vitals`, `alpha.detectors`, ...) are gone: a deliberate clean break, since alpha has no tags.
 
 A pack (`alpha.core.DomainPack`) declares its `NAME`, `VERSION` (MAJOR.MINOR.PATCH), `DOMAIN` and the Key names it can emit (`KEYS`),
@@ -100,7 +100,7 @@ a subclass, a non-finite number or an integer too large for a float; `age_months
 **The second pack.** `alpha.packs.service_health` takes a `ServiceObservation` (p95 latency in ms, error rate as a fraction, queue depth, and a tier of `interactive` or `batch`) and emits five Keys: `latency_high`, `latency_critical`, `error_burst`, `queue_backlog` and `degraded_service` (high latency together with an error burst). Its 8 thresholds are declared as bounded parameters and are what the detectors use: each pack builds its threshold table from its own declared parameters, and the tables are read-only. They are synthetic, tuned to no real service, and declared "unapproved" the same way. A suite (`tests/test_two_packs_one_contract.py`) holds both packs to the same contract: both register in one registry, are held to the Keys they declared, observe deterministically, record their identity in the existing `origin.transformation` field (which changes the bound content, so the identity is part of what is bound), and feed Zeta locks. `examples/service_degradation.py` runs a service timeline through a Zeta lock.
 
 The pediatric pack declares its 25 age-group thresholds (`PEDIATRIC_NORMS`) as bounded parameters. **Nobody has approved them**: `approved_by` says
-"unapproved: copied verbatim from OBSERVE ...", `approval_date` is the date of the declaration, and the justification repeats that they are not
+"unapproved: provisional proxies re-derived 2026-11-23 ...", `approval_date` is the date of the declaration, and the justification repeats that they are not
 independently clinically validated. The fixed absolute thresholds of `critical_o2`, `hypothermia` and the three syndrome detectors are still literals in
 `detectors.py`, not yet declared parameters. Naming a real reviewer is the pack owner's decision.
 
@@ -126,7 +126,7 @@ contract in sentinel_os (kernel contract, declared bounded parameters, fail-loud
 | Domain | One clinical pack (pediatric vitals) and one synthetic pack (service health). Not a general observation runtime. Driving/ascent/IVR detectors were **not** extracted. |
 | Confidence | Always `1.0`. Callers who need probabilistic detection must do it elsewhere. |
 | Age-group holes | `get_age_group(None)` and ages outside the table follow source behavior; do not assume clinical completeness. |
-| Uncalibrated norms | `PEDIATRIC_NORMS` copied from OBSERVE. Not independently clinically validated. Commercial red team: OBSERVE pediatric path is **not commercially relevant as-is** (missed detections filed as test skips). |
+| Uncalibrated norms | `PEDIATRIC_NORMS`: heart rate, respiratory rate and newborn fever limits re-derived 2026-11-23 from Fleming 2011, Goldstein 2005 and AAP 2021 as provisional proxies (OBSERVE's low heart-rate limit rose with age); the rest copied from OBSERVE. The "child" group spans 3 to 18 years and needs splitting. Not independently clinically validated. Commercial red team: OBSERVE pediatric path is **not commercially relevant as-is** (missed detections filed as test skips). |
 | Dependency | `zeta` is pinned by commit in `pyproject.toml` (`tests/test_zeta_pin.py` holds the pin), so moving it is a reviewed change. It is a git dependency, not on a package index. |
 | Orchestrator-path wiring | observe-perceive still runs `observe_consolidated.py` RiskAdapters inline. α is **not imported** by the orchestrator. Dual implementation: extract vs source of extraction. |
 | Threading / IO | Pure functions. No store. |
