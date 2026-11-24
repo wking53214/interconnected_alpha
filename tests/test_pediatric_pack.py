@@ -1,7 +1,7 @@
 """The pediatric-vitals pack: today's detectors, moved under alpha.packs.pediatric_vitals and declared as a domain pack.
 
 The golden check is the point of the move: a digest of every detector output (names, presence, confidence, reasons and each
-set's min_confidence; zeta's key fingerprint is a function of the same fields) over a grid of 20,160 readings, captured from the code BEFORE it moved (tests/golden_pediatric_keys.json), must be
+set's min_confidence; zeta's key fingerprint is a function of the same fields) over a grid of 75,264 readings, captured from the code BEFORE it moved (tests/golden_pediatric_keys.json), must be
 reproduced exactly by the code after it moved.
 
 RE-CAPTURED 2026-11-23: the heart-rate, respiratory-rate and newborn-fever limits were re-derived (thresholds.py), so the golden file
@@ -35,7 +35,7 @@ GOLDEN = json.loads((ROOT / "tests" / "golden_pediatric_keys.json").read_text(en
 
 def test_every_detector_output_over_the_grid_is_exactly_what_it_was_before_the_move():
     got = run(observe, VitalsObservation, keyset_content)
-    assert got["count"] == GOLDEN["count"] == 20160
+    assert got["count"] == GOLDEN["count"] == 75264
     assert got["sha256"] == GOLDEN["sha256"]
     assert got["sample"] == GOLDEN["sample"]
 
@@ -69,7 +69,7 @@ def test_the_pack_declares_exactly_the_keys_its_detectors_emit():
 
 def test_the_age_group_table_is_declared_as_parameters_with_bounds():
     parameters = PediatricVitalsPack().parameters()
-    assert len(parameters) == 25
+    assert len(parameters) == 35
     by_name = {p.name: p for p in parameters}
     for group, row in PEDIATRIC_NORMS.items():
         for key, value in row.items():

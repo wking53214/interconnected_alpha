@@ -18,8 +18,8 @@ from alpha.packs.pediatric_vitals.vitals import VitalsObservation
 
 
 def normal_child(**overrides):
-    """Baseline: normal vitals for a 4-year-old (age_group='child',
-    thresholds hr_high=130, hr_low=100, rr_high=35, o2_low=92, temp_high=39.5)."""
+    """Baseline: normal vitals for a 4-year-old (age_group='preschool',
+    thresholds hr_high=135, hr_low=65, rr_high=33, o2_low=92, temp_high=39.5)."""
     defaults = dict(heart_rate=110, oxygen_saturation=98.0, respiratory_rate=20, temperature=37.0, age_months=48)
     defaults.update(overrides)
     return VitalsObservation(**defaults)
@@ -38,7 +38,7 @@ def test_critical_o2_does_not_fire_at_exactly_88():
 
 
 def test_warning_o2_fires_between_88_and_age_threshold():
-    # child o2_low = 92
+    # preschool o2_low = 92
     v = normal_child(oxygen_saturation=90.0)
     assert critical_o2(v).present is False
     assert warning_o2(v).present is True
@@ -68,41 +68,41 @@ def test_warning_o2_uses_correct_age_adjusted_threshold(age_months, o2_low):
 # --- tachycardia / bradycardia ---
 
 def test_tachycardia_fires_above_age_adjusted_threshold():
-    v = normal_child(heart_rate=131)  # child hr_high=130
+    v = normal_child(heart_rate=136)  # preschool hr_high=135
     assert tachycardia(v).present is True
 
 
 def test_tachycardia_does_not_fire_at_threshold():
-    v = normal_child(heart_rate=130)
+    v = normal_child(heart_rate=135)
     assert tachycardia(v).present is False  # strict '>'
 
 
 def test_bradycardia_fires_below_age_adjusted_threshold():
-    v = normal_child(heart_rate=49)  # child hr_low=50
+    v = normal_child(heart_rate=64)  # preschool hr_low=65
     assert bradycardia(v).present is True
 
 
 def test_bradycardia_does_not_fire_at_threshold():
-    v = normal_child(heart_rate=50)
+    v = normal_child(heart_rate=65)
     assert bradycardia(v).present is False
 
 
 # --- tachypnea ---
 
 def test_tachypnea_fires_above_age_adjusted_threshold():
-    v = normal_child(respiratory_rate=36)  # child rr_high=35
+    v = normal_child(respiratory_rate=34)  # preschool rr_high=33
     assert tachypnea(v).present is True
 
 
 def test_tachypnea_does_not_fire_at_threshold():
-    v = normal_child(respiratory_rate=35)
+    v = normal_child(respiratory_rate=33)
     assert tachypnea(v).present is False
 
 
 # --- fever / hypothermia ---
 
 def test_fever_fires_above_age_adjusted_threshold():
-    v = normal_child(temperature=39.6)  # child temp_high=39.5
+    v = normal_child(temperature=39.6)  # preschool temp_high=39.5
     assert fever(v).present is True
 
 
@@ -212,3 +212,18 @@ def test_all_syndrome_keys_have_confidence_one_by_design():
     v = VitalsObservation(heart_rate=145, oxygen_saturation=90.0, respiratory_rate=36, temperature=39.6, age_months=14)
     keys = detect_all(v)
     assert all(k.confidence == 1.0 for k in keys)
+
+
+@pytest.mark.parametrize("age_months,hr_low,hr_high,rr_high", [
+    (48, 65, 135, 33),     # preschool, 3 to under 6 years
+    (96, 50, 125, 27),     # school, 6 to under 12 years
+    (180, 45, 115, 26),    # adolescent, 12 years and up
+])
+def test_the_split_age_groups_use_their_own_heart_and_respiratory_rate_limits(age_months, hr_low, hr_high, rr_high):
+    rest = dict(age_months=age_months, heart_rate=100, respiratory_rate=20)
+    assert tachycardia(normal_child(**{**rest, "heart_rate": hr_high + 1})).present is True
+    assert tachycardia(normal_child(**{**rest, "heart_rate": hr_high})).present is False
+    assert bradycardia(normal_child(**{**rest, "heart_rate": hr_low - 1})).present is True
+    assert bradycardia(normal_child(**{**rest, "heart_rate": hr_low})).present is False
+    assert tachypnea(normal_child(**{**rest, "respiratory_rate": rr_high + 1})).present is True
+    assert tachypnea(normal_child(**{**rest, "respiratory_rate": rr_high})).present is False

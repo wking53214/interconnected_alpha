@@ -82,7 +82,7 @@ def test_a_low_heart_rate_limit_above_the_high_one_is_refused_in_the_pediatric_p
         NAME = "crossed_pediatric"
 
         def parameters(self):
-            return tuple(dataclasses.replace(p, value=200) if p.name == "child_hr_low" else p for p in super().parameters())
+            return tuple(dataclasses.replace(p, value=200) if p.name == "preschool_hr_low" else p for p in super().parameters())
 
     with pytest.raises(PackValidationError, match="hr_low"):
         PackRegistry().register(Crossed())

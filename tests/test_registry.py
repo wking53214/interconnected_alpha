@@ -3,7 +3,7 @@ from alpha.packs.pediatric_vitals.vitals import VitalsObservation
 
 
 def test_observe_returns_keyset_with_expected_present_names():
-    # child (age_months=48) thresholds: hr_high=130, temp_high=39.5
+    # preschool (age_months=48) thresholds: hr_high=135, temp_high=39.5
     v = VitalsObservation(heart_rate=145, oxygen_saturation=90.0, respiratory_rate=36, temperature=39.6, age_months=48)
     ks = observe(v)
     assert ks.is_present("septic_shock") is True

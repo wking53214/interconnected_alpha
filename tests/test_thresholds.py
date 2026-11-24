@@ -10,8 +10,12 @@ from alpha.packs.pediatric_vitals.thresholds import PEDIATRIC_NORMS, get_age_gro
     (11, "infant"),
     (12, "toddler"),
     (35, "toddler"),
-    (36, "child"),
-    (200, "child"),
+    (36, "preschool"),
+    (71, "preschool"),
+    (72, "school"),
+    (143, "school"),
+    (144, "adolescent"),
+    (200, "adolescent"),
     (None, "generic"),
 ])
 def test_get_age_group_boundaries(age_months, expected):
@@ -39,7 +43,7 @@ def test_get_age_group_never_returns_a_key_missing_from_pediatric_norms():
     # PEDIATRIC_NORMS[get_age_group(...)] lookups would raise a bare
     # KeyError with no context. This pins every representative age band
     # (plus None) to a real PEDIATRIC_NORMS key.
-    representative_ages = [0, 2, 3, 11, 12, 35, 36, 200, None]
+    representative_ages = [0, 2, 3, 11, 12, 35, 36, 71, 72, 143, 144, 200, None]
     produced_groups = {get_age_group(a) for a in representative_ages}
     assert produced_groups <= set(PEDIATRIC_NORMS.keys())
 
